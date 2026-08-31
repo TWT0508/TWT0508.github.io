@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>活性炭再生工艺参数智能推荐系统 · 王雨晨</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --accent: #1d4ed8;
+    --line: #e5e7eb;
+    --soft: #f8fafc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  .back {
+    display: inline-block;
+    margin: 32px 0 20px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .back:hover { text-decoration: underline; }
+  .ptitle { font-size: 1.55rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+  .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+  .media { margin-bottom: 28px; }
+  .media img, .media video {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    display: block;
+  }
+  .media video { background: #000; }
+  .media-caption {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .body h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+    margin: 26px 0 12px;
+  }
+  .body p { color: #374151; font-size: 0.95rem; }
+  .body ul { list-style: none; }
+  .body ul li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 0.95rem;
+  }
+  .body ul li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    padding: 40px 0 48px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回主页</a>
+  <h1 class="ptitle">活性炭再生工艺参数智能推荐系统</h1>
+  <div class="meta">队长 · 2025.12 — 2026.03 · 大模型微调 · RAG</div>
+
+  <div class="body">
+    <h2>项目简介</h2>
+    <p>面向回转窑活性炭回收场景，构建基于大模型与检索增强生成的工艺参数智能优化系统，实现从原料指标到工艺参数的智能匹配与推荐。</p>
+
+    <h2>我的工作</h2>
+    <ul>
+      <li>基于 LoRA 微调 + RAG 检索增强生成，搭建回转窑活性炭回收工艺智能优化系统</li>
+      <li>依托企业多批次生产数据构建工艺关联模型，实现原料指标到工艺参数的智能匹配</li>
+      <li>经实验验证，系统使生产能耗平均降低约 50%，活性炭再生率提升 12 个百分点，达标率由 80% 提升至 95% 以上</li>
+      <li>技术栈：Python、大模型微调、RAG 检索、数据挖掘与可视化</li>
+    </ul>
+
+    <h2>项目展示</h2>
+    <div class="media">
+      <img src="activated-carbon/活性炭再生工艺参数智能推荐系统的系统架构图.png" alt="系统架构图" loading="lazy">
+      <div class="media-caption">系统架构图</div>
+    </div>
+    <div class="media">
+      <img src="activated-carbon/活性炭再生工艺参数智能推荐系统中Lora微调原理图.png" alt="LoRA 微调原理图" loading="lazy">
+      <div class="media-caption">LoRA 微调原理图</div>
+    </div>
+    <div class="media">
+      <img src="activated-carbon/200组数据测试结果可视化.png" alt="200组数据测试结果可视化" loading="lazy">
+      <div class="media-caption">200组数据测试结果可视化</div>
+    </div>
+    <div class="media">
+      <img src="activated-carbon/活性炭再生工艺参数智能推荐系统的系统演示(CLI版本).png" alt="系统演示（CLI 版本）" loading="lazy">
+      <div class="media-caption">系统演示（CLI 版本）</div>
+    </div>
+  </div>
+
+  <footer>© 2026 王雨晨</footer>
+</div>
+</body>
+</html>

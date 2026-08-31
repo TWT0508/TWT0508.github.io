@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>王雨晨 · 个人主页</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --accent: #1d4ed8;
+    --line: #e5e7eb;
+    --soft: #f8fafc;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- Hero ---------- */
+  header.hero {
+    padding: 64px 0 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--soft);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 18px;
+  }
+
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 20px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .contact a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .contact a:hover { text-decoration: underline; }
+
+  /* ---------- Sections ---------- */
+  main { padding: 8px 0 40px; }
+
+  section {
+    padding: 36px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section:last-of-type { border-bottom: none; }
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--text);
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+    margin-bottom: 20px;
+  }
+
+  /* item blocks */
+  .item { margin-bottom: 24px; }
+  .item:last-child { margin-bottom: 0; }
+
+  .item-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-bottom: 4px;
+  }
+  .item-title { font-weight: 600; font-size: 1rem; }
+  .item-role { color: var(--accent); font-weight: 500; font-size: 0.9rem; }
+  .item-time { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+
+  .item-org { color: var(--muted); font-size: 0.9rem; margin-bottom: 8px; }
+
+  ul { list-style: none; }
+  ul li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 6px;
+    color: #374151;
+    font-size: 0.94rem;
+  }
+  ul li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  ul li:last-child { margin-bottom: 0; }
+
+  /* awards table-like */
+  .award {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 0.94rem;
+  }
+  .award:last-child { border-bottom: none; }
+  .award .name { color: #374151; }
+  .award .level { color: var(--accent); font-weight: 500; white-space: nowrap; }
+
+  /* skills tags */
+  .skills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tag {
+    display: inline-block;
+    padding: 5px 14px;
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.88rem;
+    color: #374151;
+  }
+  .skill-group { margin-bottom: 22px; }
+  .skill-group:last-child { margin-bottom: 0; }
+  .skill-group h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  /* ---------- 项目经历 卡片 ---------- */
+  .project-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .project-link:last-child { margin-bottom: 0; }
+  .project-link:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .project-link .ptitle { font-weight: 600; font-size: 1rem; }
+  .project-link .pmeta { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
+  .project-link .parrow {
+    color: var(--muted);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .project-link:hover .parrow { color: var(--accent); transform: translateX(3px); }
+
+  /* ---------- 获奖证书 轮播 ---------- */
+  .carousel {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--soft);
+  }
+  .carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+  .carousel-slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .carousel-slide img {
+    width: 100%;
+    height: 400px;
+    object-fit: contain;
+    border-radius: 6px;
+    cursor: zoom-in;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .carousel-caption {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 0.88rem;
+    text-align: center;
+  }
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.92);
+    color: var(--text);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.18);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .carousel-btn:hover { background: #ffffff; }
+  .carousel-btn.prev { left: 12px; }
+  .carousel-btn.next { right: 12px; }
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    background: var(--line);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .carousel-dot.active { background: var(--accent); }
+
+  /* 全屏预览 */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    cursor: zoom-out;
+    padding: 24px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 94%;
+    max-height: 94%;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    padding: 32px 0 48px;
+  }
+
+  @media (max-width: 520px) {
+    header.hero { padding-top: 48px; }
+    .avatar { width: 100px; height: 100px; }
+    h1 { font-size: 1.6rem; }
+    .carousel-slide img { height: 240px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <img class="avatar" src="images/avatar.jpg" alt="王雨晨">
+    <h1>王雨晨</h1>
+    <p class="subtitle">上海工程技术大学 · 信息管理与信息系统（大数据方向）& 具身智能机器人专项班成员 本科大四 </p>
+    <div class="contact">
+      <span>📅 2006年3月</span>
+      <span>📞 187-3663-4121</span>
+      <span>✉️ <a href="mailto:3302216262@qq.com">3302216262@qq.com</a></span>
+    </div>
+  </header>
+
+  <main>
+
+    <section id="education">
+      <h2>教育背景</h2>
+      <div class="item">
+        <div class="item-head">
+          <span class="item-title">上海工程技术大学</span>
+          <span class="item-time">2023.09 — 至今</span>
+        </div>
+        <div class="item-org">信息管理与信息系统（大数据方向）· 本科</div>
+        <ul>
+          <li>核心课程：计算机基础、机器学习、深度学习、数据结构与算法、数据库原理、大规模分布式处理等</li>
+          <li>学术成绩：GPA 3.74 / 4.0，专业排名 1 / 77</li>
+          <li>连续获校一、二等奖学金 6 次；2024「优秀学生」、2025「三好学生」</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="internship">
+      <h2>实习经历</h2>
+      <div class="item">
+        <div class="item-head">
+          <span class="item-title">AI 宠物识别平台</span>
+          <span class="item-role">软件研发工程师</span>
+          <span class="item-time">2025.10 — 2026.04</span>
+        </div>
+        <div class="item-org">中国科学院软件研究所 &amp; 华为昇思MindSpore社区开源实习</div>
+        <ul>
+          <li>基于 MindSpore 框架开发，采用 MindYolo 目标检测模型并改进，在 Kaggle 斯坦福犬数据集（20580 张）上实现 120 类细粒度犬种识别，准确率 94% 以上</li>
+          <li>通过 Atc 工具完成模型格式转换并部署至边缘设备，构建高效、稳定的本地推理能力</li>
+          <li>基于 LangChain 搭建专属 Agent，通过 MQTT 接入边缘推理结果，整合 LoRA 微调的 Qwen-3.5B 模型，实现「先判犬种、再判虫患风险」的核心逻辑</li>
+          <li>构建「图像输入 → 犬种识别 → 虫患风险推理 → 方案输出」闭环，服务宠物科普、智能问答、云养宠及宠物医疗健康等场景</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="project">
+      <h2>项目经历</h2>
+      <a class="project-link" href="projects/picking-robot.html">
+        <div>
+          <div class="ptitle">多模态感知果园自主采摘机器人</div>
+          <div class="pmeta">机械臂调试 · 模仿学习 (ACT) · LeRobot · 触觉感知</div>
+        </div>
+        <span class="parrow">›</span>
+      </a>
+      <a class="project-link" href="projects/activated-carbon.html">
+        <div>
+          <div class="ptitle">活性炭再生工艺参数智能推荐系统</div>
+          <div class="pmeta">队长 · 2025.12 — 2026.03 · 大模型微调 · RAG</div>
+        </div>
+        <span class="parrow">›</span>
+      </a>
+      <a class="project-link" href="projects/drone.html">
+        <div>
+          <div class="ptitle">四旋翼无人机自主穿环系统</div>
+          <div class="pmeta">香港理工大学 IEEE RAS 暑期学校 · PX4 · ROS2 · OFFBOARD</div>
+        </div>
+        <span class="parrow">›</span>
+      </a>
+    </section>
+
+    <section id="awards">
+      <h2>竞赛获奖</h2>
+      <div class="award">
+        <span class="name">2025年睿抗机器人开发者大赛 · 机器视觉系统创新竞赛</span>
+        <span class="level">全国一等奖</span>
+      </div>
+      <div class="award">
+        <span class="name">2026年中国机器人及人工智能大赛 · 机器人创新赛</span>
+        <span class="level">全国二等奖</span>
+      </div>
+      <div class="award">
+        <span class="name">2025年全国机器人大赛 RoboCon</span>
+        <span class="level">全国三等奖</span>
+      </div>
+      <div class="award">
+        <span class="name">华为昇思 MindSpore 创新训练营项目</span>
+        <span class="level">一等奖</span>
+      </div>
+      <div class="award">
+        <span class="name">华为 CANN 训练营</span>
+        <span class="level">优秀营员</span>
+      </div>
+      <div class="award">
+        <span class="name">2026年上海工程技术大学高等数学竞赛</span>
+        <span class="level">一等奖(第一)</span>
+      </div>
+      <div class="award">
+        <span class="name">第十六届全国大学生数学竞赛</span>
+        <span class="level">上海市二等奖</span>
+      </div>
+      <div class="award">
+        <span class="name">中国大学生机械工程创新创意大赛「时代新材杯」工业工程与精益管理创新赛</span>
+        <span class="level">上海市三等奖</span>
+      </div>
+      <div class="award">
+        <span class="name">中国高教社杯数学建模比赛</span>
+        <span class="level">上海市三等奖</span>
+      </div>
+    </section>
+
+    <section id="award-certs">
+      <h2>获奖证书</h2>
+      <div class="carousel" id="certCarousel">
+        <div class="carousel-track" id="certTrack">
+          <div class="carousel-slide">
+            <img src="images/cert-01.jpg" alt="睿抗机器人开发者大赛 全国一等奖">
+            <div class="carousel-caption">睿抗机器人开发者大赛 · 全国一等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-02.jpg" alt="中国机器人及人工智能大赛 全国二等奖">
+            <div class="carousel-caption">中国机器人及人工智能大赛 · 全国二等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-03.jpg" alt="全国机器人大赛 RoboCon 全国三等奖">
+            <div class="carousel-caption">全国机器人大赛 RoboCon · 全国三等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-11.jpg" alt="香港理工大学 RAS 训练营">
+            <div class="carousel-caption">香港理工大学 RAS 训练营</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-04.jpg" alt="华为昇思 MindSpore 创新训练营项目 一等奖">
+            <div class="carousel-caption">华为昇思 MindSpore 创新训练营项目 · 一等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-05.jpg" alt="华为 CANN 训练营 优秀营员">
+            <div class="carousel-caption">华为 CANN 训练营 · 优秀营员</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-06.jpg" alt="上海工程技术大学高等数学竞赛 一等奖">
+            <div class="carousel-caption">上海工程技术大学高等数学竞赛 · 一等奖（第一）</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-07.jpg" alt="全国大学生数学竞赛 二等奖">
+            <div class="carousel-caption">全国大学生数学竞赛 · 上海市二等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-08.jpg" alt="中国大学生机械工程创新创意大赛 三等奖">
+            <div class="carousel-caption">中国大学生机械工程创新创意大赛 · 上海市三等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-09.jpg" alt="数学建模 上海市三等奖">
+            <div class="carousel-caption">数学建模 · 上海市三等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-10.jpg" alt="商务大数据分析 校级一等奖">
+            <div class="carousel-caption">商务大数据分析 · 校级一等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-12.jpg" alt="人工智能机器人 仿生组 省级三等奖">
+            <div class="carousel-caption">人工智能机器人 · 仿生组 · 省级三等奖</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-13.jpg" alt="优秀学生 2024">
+            <div class="carousel-caption">优秀学生 · 2024</div>
+          </div>
+          <div class="carousel-slide">
+            <img src="images/cert-14.jpg" alt="三好学生 2025">
+            <div class="carousel-caption">三好学生 · 2025</div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" id="certPrev" aria-label="上一张">‹</button>
+        <button class="carousel-btn next" id="certNext" aria-label="下一张">›</button>
+      </div>
+      <div class="carousel-dots" id="certDots"></div>
+    </section>
+
+    <section id="skills">
+      <h2>技术栈</h2>
+
+      <div class="skill-group">
+        <h3>编程语言</h3>
+        <div class="skills">
+          <span class="tag">Python</span>
+          <span class="tag">C</span>
+          <span class="tag">Java</span>
+          <span class="tag">Lua</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>大模型与生成式 AI</h3>
+        <div class="skills">
+          <span class="tag">大模型微调 (LoRA)</span>
+          <span class="tag">RAG 检索增强生成</span>
+          <span class="tag">LangChain / Agent</span>
+          <span class="tag">Qwen 系列模型</span>
+          <span class="tag">MindSpore</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>深度学习与具身智能</h3>
+        <div class="skills">
+          <span class="tag">Pytorch</span>
+          <span class="tag">ML(Scikit-learn)</span>
+          <span class="tag">LeRobot</span>
+          <span class="tag">模仿学习 (ACT)</span>
+          <span class="tag">强化学习(探索中)</span>
+          <span class="tag">机械臂 (SO-ARM101)</span>
+          <span class="tag">触觉传感器 (DFRobot 4×8)</span>
+          <span class="tag">目标检测 (MindYolo)</span>
+          <span class="tag">触觉特征编码 (CNN)</span>
+          <span class="tag">多模态融合</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>机器人与无人机</h3>
+        <div class="skills">
+          <span class="tag">PX4 / QGroundControl</span>
+          <span class="tag">ROS2 / MAVROS</span>
+          <span class="tag">Gazebo SITL 仿真</span>
+          <span class="tag">Vicon 动捕 / VRPN</span>
+          <span class="tag">OFFBOARD 自主飞行</span>
+          <span class="tag">路径跟踪 (pure pursuit)</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3>工具与平台</h3>
+        <div class="skills">
+          <span class="tag">Ubuntu</span> 
+          <span class="tag">Git / GitHub</span>
+          <span class="tag">边缘设备(树莓派、香橙派)</span>
+          <span class="tag">WandB</span>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="certificates">
+      <h2>证书</h2>
+      <div class="certificates">
+        <span class="tag">CET-4 (433)</span>
+        <span class="tag">CET-6 (437)</span>
+        <span class="tag">C1 驾驶证</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>© 2026 王雨晨</footer>
+
+</div>
+
+<script>
+(function () {
+  var track = document.getElementById('certTrack');
+  var slides = Array.prototype.slice.call(track.children);
+  var prev = document.getElementById('certPrev');
+  var next = document.getElementById('certNext');
+  var dotsBox = document.getElementById('certDots');
+  var total = slides.length;
+  var idx = 0;
+  var timer = null;
+
+  // 生成圆点指示器
+  slides.forEach(function (_, i) {
+    var d = document.createElement('button');
+    d.className = 'carousel-dot';
+    d.setAttribute('aria-label', '第 ' + (i + 1) + ' 张');
+    d.addEventListener('click', function () { go(i); restart(); });
+    dotsBox.appendChild(d);
+  });
+  var dots = dotsBox.children;
+
+  function go(i) {
+    idx = (i + total) % total;
+    track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    for (var j = 0; j < total; j++) {
+      dots[j].classList.toggle('active', j === idx);
+    }
+  }
+
+  function restart() {
+    clearInterval(timer);
+    timer = setInterval(function () { go(idx + 1); }, 4000);
+  }
+
+  prev.addEventListener('click', function () { go(idx - 1); restart(); });
+  next.addEventListener('click', function () { go(idx + 1); restart(); });
+
+  // 鼠标悬停时暂停自动播放
+  var box = document.getElementById('certCarousel');
+  box.addEventListener('mouseenter', function () { clearInterval(timer); });
+  box.addEventListener('mouseleave', restart);
+
+  // 点击图片全屏预览
+  var lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  var lbImg = document.createElement('img');
+  lightbox.appendChild(lbImg);
+  document.body.appendChild(lightbox);
+  slides.forEach(function (s) {
+    var img = s.querySelector('img');
+    img.addEventListener('click', function () {
+      lbImg.src = img.src;
+      lightbox.classList.add('open');
+    });
+  });
+  lightbox.addEventListener('click', function () { lightbox.classList.remove('open'); });
+
+  go(0);
+  restart();
+})();
+</script>
+</body>
+</html>

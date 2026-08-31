@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多模态感知果园自主采摘机器人 · 王雨晨</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --accent: #1d4ed8;
+    --line: #e5e7eb;
+    --soft: #f8fafc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  .back {
+    display: inline-block;
+    margin: 32px 0 20px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .back:hover { text-decoration: underline; }
+  .ptitle { font-size: 1.55rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+  .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; }
+  .repo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--accent);
+    color: #ffffff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    margin-bottom: 30px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .repo-link:hover { background: #1e40af; transform: translateY(-1px); }
+  .repo-link svg { flex-shrink: 0; }
+  .media { margin-bottom: 28px; }
+  .media img, .media video {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    display: block;
+  }
+  .media video { background: #000; }
+  .media-caption {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .body h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+    margin: 26px 0 12px;
+  }
+  .body p { color: #374151; font-size: 0.95rem; }
+  .body ul { list-style: none; }
+  .body ul li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 0.95rem;
+  }
+  .body ul li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    padding: 40px 0 48px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回主页</a>
+  <h1 class="ptitle">多模态感知果园自主采摘机器人</h1>
+  <div class="meta">机械臂调试 · 模仿学习 (ACT) · LeRobot · 触觉感知</div>
+  <a class="repo-link" href="https://github.com/TWT0508/Embodied_intelligence" target="_blank" rel="noopener">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    查看 GitHub 仓库
+  </a>
+
+  <div class="body">
+    <h2>项目简介</h2>
+    <p>本项目面向具身智能柔性作业场景，针对传统纯视觉抓取方式缺乏接触力感知、极易造成易碎、柔性物体挤压破损的行业难题，基于 LeRobot 开源机器人学习框架搭建了一套视觉-触觉-本体状态三模态融合的机器人自适应抓取系统。项目以 SO-ARM101/SO-100 桌面级六自由度机械臂为执行载体，搭载双路RGB视觉相机与DFRobot 4×8阵列触觉传感器，采用 ACT（Action Chunking Transformer） 模仿学习策略，实现端到端的灵巧抓取策略训练与真实硬件部署。
+本项目通过搭建专属CNN触觉编码器，将二维压力分布空间特征编码为语义Token，与双视角视觉特征、机械臂本体状态特征完成深度融合；创新性采用训练行为克隆 + 推理触觉力控的解耦架构，在不破坏策略学习泛化性的前提下，通过实时触觉反馈动态限制夹爪夹紧力度，有效解决柔性物体抓取破损、滑移失效问题，最终实现水果等易碎物体的安全、自适应、无损柔性抓取。</p>
+
+    <h2>我的工作</h2>
+    <ul>
+      <li>本人主要负责本项目触觉感知模块的全套研发与集成工作。完成 DFRobot 4×8阵列柔性触觉传感器与 SO-ARM101/SO-100 机械臂的硬件适配与联调，基于 LeRobot 框架二次开发，搭建完整的触觉数据采集与预处理流水线，实现触觉串口数据解析、基线自动校准、EMA时序滤波、异常容错处理等全套功能，解决触觉信号漂移、噪声干扰、多设备时序错位等工程问题。</li>
+      <li>针对触觉阵列的二维空间特性，独立设计并实现 CNN触觉特征编码器，保留压力分布、接触位置、受力梯度等空间细节，将原始压力矩阵转化为可参与Transformer融合的特征Token，实现视觉、本体、触觉三模态特征的统一建模。同时设计并落地触觉闭环力控安全机制，在模型推理阶段根据实时触觉压力阈值动态修正夹爪动作，从物理控制层面保障柔性物体抓取安全性。此外，本人完成全套数据集采集、模型训练、超参数调优、WandB实验日志记录与跨平台同步工作，并通过大量实物对比实验验证了触觉多模态融合方案的有效性与优越性。</li>
+    </ul>
+
+    <h2>项目展示</h2>
+    <div class="media">
+      <img src="picking-robot/系统框架图.png" alt="系统框架图" loading="lazy">
+      <div class="media-caption">系统框架图</div>
+    </div>
+    <div class="media">
+      <img src="picking-robot/融合触觉信息的ACT框架图.png" alt="融合触觉信息的ACT框架图" loading="lazy">
+      <div class="media-caption">融合触觉信息的ACT框架图</div>
+    </div>
+    <div class="media">
+      <video src="picking-robot/采摘演示.mp4" autoplay muted loop playsinline controls></video>
+      <div class="media-caption">采摘演示</div>
+    </div>
+  </div>
+
+  <footer>© 2026 王雨晨</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四旋翼无人机自主穿环系统 · 王雨晨</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --accent: #1d4ed8;
+    --line: #e5e7eb;
+    --soft: #f8fafc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  .back {
+    display: inline-block;
+    margin: 32px 0 20px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .back:hover { text-decoration: underline; }
+  .ptitle { font-size: 1.55rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+  .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; }
+  .repo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--accent);
+    color: #ffffff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    margin-bottom: 30px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .repo-link:hover { background: #1e40af; transform: translateY(-1px); }
+  .repo-link svg { flex-shrink: 0; }
+  .media { margin-bottom: 28px; }
+  .media img, .media video {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    display: block;
+  }
+  .media video { background: #000; }
+  .media-caption {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .body h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+    margin: 26px 0 12px;
+  }
+  .body p { color: #374151; font-size: 0.95rem; }
+  .body ul { list-style: none; }
+  .body ul li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 0.95rem;
+  }
+  .body ul li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .body ul li strong { font-weight: 600; color: var(--text); }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    padding: 40px 0 48px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回主页</a>
+  <h1 class="ptitle">四旋翼无人机自主穿环系统（Quadrotor Ring Traversal Challenge）</h1>
+  <div class="meta">香港理工大学 IEEE RAS 暑期学校 · PX4 · ROS2 · MAVROS · OFFBOARD 自主飞行</div>
+  <a class="repo-link" href="https://github.com/TWT0508/ros2_drone_sim" target="_blank" rel="noopener">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    查看 GitHub 仓库
+  </a>
+
+  <div class="body">
+    <h2>项目简介</h2>
+    <p>参与香港理工大学 IEEE RAS 暑期学校项目，完成四旋翼无人机从硬件组装、飞控配置到自主飞行算法部署的全流程，实现无人机在室内动捕（Vicon）环境下按指定顺序自主穿越多个圆环并抵达终点，最终以「跟踪精度 50% + 完成时间 50%」的综合评分完成比赛。最终得分74.1（max=77）</p>
+
+    <h2>团队工作</h2>
+    <ul>
+      <li><strong>硬件组装：</strong>从零搭建四旋翼无人机，包括碳纤维机架、MicoAir743-AIO 飞控（集成 4-in-1 ESC、运行 PX4 固件）、无刷电机与桨叶、3S 580mAh LiPo 电池、Orange Pi 机载电脑、ELRS 遥控链路、MTF-02P 光流/ToF 激光测距传感器；完成电机电源线焊接、电容与 LED 灯带安装、整机走线等。</li>
+      <li><strong>系统配置与标定：</strong>使用 QGroundControl 完成加速度计/陀螺仪/水平面/遥控器/电机等标定；配置 PX4 参数（EKF2 外视觉定位、禁用 GPS/气压计/测距融合），实现基于 Vicon 动捕的室内状态估计。</li>
+      <li><strong>通信链路搭建：</strong>基于 Ubuntu 22.04 + ROS2 Humble + MAVROS + PX4 构建机载自主飞行栈；配置 MAVROS 串口波特率 921600、ROS_DOMAIN_ID 多机组隔离、ENU→NED 坐标变换，打通「Vicon → VRPN → MAVROS → PX4 EKF2」的位姿数据流。</li>
+      <li><strong>仿真验证：</strong>在 Gazebo SITL 环境启动 X500 视觉模型，联合 QGC、MAVROS、RViz2 完成 OFFBOARD 自主飞行全流程仿真（等待飞控→预流式设定点→切 OFFBOARD→解锁→起飞→航点跟踪→降落→自动上锁）。</li>
+      <li><strong>自主飞行与调参：</strong>部署 offboard 控制程序，采用 20Hz 位置设定点预流式发送 + OFFBOARD 模式切换策略；基于前瞻点（look-ahead / pure pursuit）路径跟踪算法实现按航点序列自主穿环，通过调优 lookahead_distance 参数在跟踪精度与完成时间之间取得平衡。</li>
+    </ul>
+
+    <h2>项目展示</h2>
+    <div class="media">
+      <img src="drone/结果可视化.png" alt="结果可视化" loading="lazy">
+      <div class="media-caption">结果可视化</div>
+    </div>
+    <div class="media">
+      <video src="drone/无人机飞行演示视频.mp4" autoplay muted loop playsinline controls></video>
+      <div class="media-caption">无人机飞行演示</div>
+    </div>
+    <div class="media">
+      <video src="drone/AIMS官方视频.mp4" controls preload="metadata" playsinline></video>
+      <div class="media-caption">AIMS 官方视频</div>
+    </div>
+  </div>
+
+  <footer>© 2026 王雨晨</footer>
+</div>
+</body>
+</html>
