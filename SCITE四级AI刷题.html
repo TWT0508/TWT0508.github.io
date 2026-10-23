@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上海市高等学校信息技术水平考试 · 四级人工智能（二类）刷题助手</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --panel2:#f3f4f7; --border:#e4e7ee;
+  --text:#23272f; --muted:#8a93a6; --accent:#3b82f6; --accent2:#60a5fa;
+  --ok:#16a34a; --err:#e5484d; --warn:#f59e0b;
+  --shadow:0 1px 3px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+/* top bar */
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;padding:12px 22px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;color:var(--text)}
+.brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:18px;color:#fff}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav button{background:transparent;border:1px solid transparent;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer;font-size:14px;transition:.15s}
+.nav button:hover{color:var(--text);background:var(--panel2)}
+.nav button.active{background:var(--accent);color:#fff;font-weight:600}
+/* layout */
+.wrap{max-width:1100px;margin:0 auto;padding:22px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:860px){.grid4{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+h1{font-size:22px;margin-bottom:4px}
+h2{font-size:18px;margin-bottom:12px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+/* stat */
+.stat{text-align:center;padding:16px}
+.stat .num{font-size:30px;font-weight:800;color:var(--accent)}
+.stat .lab{color:var(--muted);font-size:13px;margin-top:4px}
+/* area card */
+.area{position:relative;cursor:pointer;transition:.18s}
+.area:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 10px 26px rgba(16,24,40,.10)}
+.area .ah{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.area .anum{width:30px;height:30px;border-radius:8px;background:var(--panel2);display:grid;place-items:center;font-weight:700;color:var(--accent)}
+.area h3{font-size:15px;color:var(--text)}
+.area .meta{color:var(--muted);font-size:12px;margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
+.progress{height:8px;background:#eef0f5;border-radius:6px;overflow:hidden;margin-top:12px}
+.progress i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .3s}
+/* buttons */
+.btn{border:none;cursor:pointer;border-radius:9px;padding:9px 16px;font-size:14px;font-weight:600;transition:.15s;color:#fff}
+.btn-primary{background:var(--accent)}
+.btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
+.btn-ok{background:var(--ok)}
+.btn-err{background:var(--err)}
+.btn-warn{background:var(--warn);color:#fff}
+.btn-sm{padding:5px 11px;font-size:13px}
+.btn:hover{filter:brightness(1.05)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.qtype{font-size:12px;padding:3px 10px;border-radius:20px;font-weight:700}
+.qt-s{background:#e6efff;color:#1d4ed8}
+.qt-m{background:#f3e8ff;color:#7c3aed}
+.qt-j{background:#e7f7ee;color:#15803d}
+.qt-sub{background:#fff4e6;color:#b45309}
+.qtext{font-size:16px;line-height:1.7;margin-bottom:16px;white-space:pre-wrap;color:var(--text)}
+.qtext b{color:var(--accent)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid var(--border);border-radius:11px;padding:12px 14px;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.opt .k{width:26px;height:26px;flex-shrink:0;border-radius:7px;background:var(--panel2);display:grid;place-items:center;font-weight:700;color:var(--muted)}
+.opt.sel{border-color:var(--accent);background:#eef5ff}
+.opt.sel .k{background:var(--accent);color:#fff}
+.opt.correct{border-color:var(--ok);background:#f0fbf5}
+.opt.correct .k{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--err);background:#fdf0f0}
+.opt.wrong .k{background:var(--err);color:#fff}
+/* analysis */
+.analysis{margin-top:16px;border-radius:11px;padding:14px;display:none;line-height:1.7;font-size:14px}
+.analysis.show{display:block}
+.analysis.ok{background:#f0fbf5;border:1px solid #bfe8d1}
+.analysis.no{background:#fdf0f0;border:1px solid #f4c6c8}
+.analysis .ttl{font-weight:800;margin-bottom:6px}
+.qbar{display:flex;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+/* lists */
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:11px;padding:12px 14px;margin-bottom:10px}
+.row .q{flex:1;font-size:14px;line-height:1.5;color:var(--text)}
+.row .acts{display:flex;gap:6px}
+/* misc */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{padding:6px 14px;border-radius:20px;background:var(--panel2);border:1px solid var(--border);cursor:pointer;font-size:13px;transition:.15s}
+.chip.active{background:var(--accent);border-color:transparent;color:#fff;font-weight:600}
+.pager{display:flex;gap:8px;margin-top:16px;align-items:center;justify-content:center}
+.searchbox{width:100%;padding:11px 14px;border-radius:11px;border:1px solid var(--border);background:#fff;color:var(--text);font-size:14px;margin-bottom:14px}
+.searchbox:focus{outline:none;border-color:var(--accent)}
+.pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;background:var(--panel2);color:var(--muted);margin-left:6px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+.progress-ring{--p:0;width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%),#eef0f5 0);display:grid;place-items:center;margin:0 auto}
+.progress-ring::before{content:attr(data-txt);position:absolute;font-weight:800;font-size:20px}
+.hidden{display:none}
+.modebar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.modebar button{background:#fff;border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:11px;cursor:pointer;font-size:14px;transition:.15s}
+.modebar button:hover{border-color:var(--accent)}
+.modebar button.active{background:var(--accent);border-color:transparent;color:#fff;font-weight:600}
+.tagline{color:var(--muted);font-size:13px;line-height:1.7}
+.foot{text-align:center;color:var(--muted);font-size:12px;padding:20px;border-top:1px solid var(--border);margin-top:30px}
+.confetti{position:fixed;top:-10px;font-size:22px;animation:fall 2.5s linear forwards;z-index:99;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+.modal-bg{position:fixed;inset:0;background:rgba(16,24,40,.35);display:none;align-items:center;justify-content:center;z-index:100}
+.modal{background:#fff;border:1px solid var(--border);border-radius:16px;padding:26px;max-width:480px;width:92%;box-shadow:var(--shadow)}
+.modal h3{margin-bottom:14px;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="logo">🤖</span> SCITE 四级 · 人工智能（二类）刷题</div>
+  <div class="nav" id="nav">
+    <button data-view="home" class="active">🏠 总览</button>
+    <button data-view="quiz">📝 刷题</button>
+    <button data-view="wrong">❌ 错题本</button>
+    <button data-view="fav">⭐ 收藏</button>
+    <button data-view="stats">📊 统计</button>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap" id="userBar"></div>
+</div>
+
+<div class="wrap">
+  <!-- HOME -->
+  <div id="view-home">
+    <h1>📌 考试总览</h1>
+    <div class="sub">上海市高等学校信息技术水平考试 · 四级人工智能（二类）· 全套 <span id="totalCnt">0</span> 题 · 按 12 个考纲知识领域分组 · 账号与进度保存在服务器，注册多个账号即可多用户共用、互不干扰、跨设备同步</div>
+    <div class="grid4" id="statsRow"></div>
+    <div class="grid3" id="areaList"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="view-quiz" class="hidden">
+    <div id="quizPicker">
+      <h1>📝 开始刷题</h1>
+      <div class="sub">选择一个知识领域开始练习。每题作答后即时判分并给出解析，也可直接“查看答案”。注册账号即可多用户共用：各自进度独立、跨设备同步。</div>
+      <div class="modebar" id="modebar"></div>
+      <div class="toolbar" style="margin-bottom:12px">
+        <button class="btn btn-primary" onclick="startAllExam()">🎯 全卷模拟考试（按真题结构全考点组卷：单选20+是非10+多选10）</button>
+      </div>
+      <div class="grid3" id="quizAreas"></div>
+    </div>
+    <div id="quizBox" class="hidden">
+      <div class="card">
+        <div class="qhead">
+          <div><span id="areaTag" class="pill"></span><span class="pill" id="unitTag"></span></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span id="qtypeTag" class="qtype"></span>
+            <span class="sub" id="qpos" style="margin:0"></span>
+          </div>
+        </div>
+        <div id="qtext" class="qtext"></div>
+        <div id="opts" class="opts"></div>
+        <div id="analysis" class="analysis"></div>
+        <div class="qbar">
+          <button class="btn btn-ghost" id="prevBtn" onclick="prevQ()">⬅ 上一题</button>
+          <button class="btn btn-ghost" id="viewAnsBtn" onclick="viewAnswer()">👁 查看答案</button>
+          <button class="btn btn-ghost" id="toggleFavBtn" onclick="toggleFav()">⭐ 收藏</button>
+          <button class="btn btn-primary" id="submitBtn" onclick="submitQ()">✔ 提交</button>
+          <button class="btn btn-ghost" id="nextBtn" onclick="nextQ()">下一题 ➡</button>
+        </div>
+      </div>
+      <div class="pager">
+        <button class="btn btn-ghost btn-sm" onclick="jumpFirst()">⏮</button>
+        <span class="sub" id="quizNavInfo"></span>
+        <button class="btn btn-ghost btn-sm" onclick="jumpLast()">⏭</button>
+        <button class="btn btn-warn btn-sm" id="exitBtn" onclick="exitQuiz()">返回选区</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRONG -->
+  <div id="view-wrong" class="hidden">
+    <h1>❌ 错题本</h1>
+    <div class="sub">自动收录所有答错的题目。可重练、移除或清空，同步保存到服务器。</div>
+    <div class="toolbar">
+      <button class="btn btn-primary" id="retrainWrong" onclick="retrainWrong()">🔄 错题重练</button>
+      <button class="btn btn-err" onclick="clearWrong()">🗑 清空错题本</button>
+    </div>
+    <div id="wrongList"></div>
+  </div>
+
+  <!-- FAV -->
+  <div id="view-fav" class="hidden">
+    <h1>⭐ 收藏题目</h1>
+    <div class="sub">标记重点题目，便于考前集中复习。</div>
+    <div id="favList"></div>
+  </div>
+
+  <!-- STATS -->
+  <div id="view-stats" class="hidden">
+    <h1>📊 学习统计</h1>
+    <div class="sub">各考点练习进度与正确率一览。</div>
+    <div id="statsTable"></div>
+  </div>
+</div>
+
+<div class="foot">四级人工智能（二类）刷题助手 · 题目按《2026年上海高校信息技术水平考试四级AI二类考纲》编制 · 账号与数据保存在服务器，多设备同步</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+    <div style="text-align:right;margin-top:18px"><button class="btn btn-ghost" onclick="closeModal()">关闭</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="authModalBg">
+  <div class="modal" style="max-width:430px">
+    <h3 id="authTitle">🔑 登录</h3>
+    <input type="hidden" id="authMode" value="login">
+    <div class="sub">多用户共用一套系统：注册账号后，各自进度/错题/收藏独立保存到服务器，换设备登录同一账号即可同步。</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+      <input class="searchbox" id="authName" placeholder="用户名">
+      <input class="searchbox" id="authPwd" type="password" placeholder="密码">
+      <div id="authConfirmRow"><input class="searchbox" id="authConfirm" type="password" placeholder="确认密码（注册时填写）"></div>
+    </div>
+    <div id="authMsg" class="sub" style="color:#ff5d7a;min-height:18px;margin:8px 0 4px"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;align-items:center">
+      <a href="javascript:openAuth('register')" style="font-size:13px;color:var(--accent);margin-right:auto">还没有账号？点此注册</a>
+      <button class="btn btn-ghost" onclick="closeAuth()">取消</button>
+      <button class="btn btn-primary" onclick="doAuth()">确定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ 题目数据 ============ */
+/* 题型: s=单选 m=多选 j=是非(对错)   答案: s/m为正确选项索引数组, j为true/false */
+const AREAS = [
+  {name:"人工智能概述", desc:"定义起源、发展历史、流派、智能计算系统、典型应用、通用/专业大模型工具"},
+  {name:"数学基础与计算思维", desc:"线性代数、微积分、概率统计、计算思维、数学建模、Python、算法评价、操作系统与Linux"},
+  {name:"生成式AI三要素基础", desc:"数据(语料采集/标注/管理)、算法(机器学习/深度学习/优化)、算力(CPU/GPU/框架/异构计算)"},
+  {name:"逻辑推理与知识图谱", desc:"谓词逻辑、推理规则、确定/不确定性推理、专家系统、知识图谱、本体知识表示"},
+  {name:"机器学习", desc:"基本概念、监督/无监督、数据预处理、性能评估、回归/分类/聚类/集成/降维、强化学习"},
+  {name:"深度学习", desc:"前向/反向传播、激活/损失函数、梯度下降、过拟合、正则化、CNN/RNN/Transformer"},
+  {name:"计算机视觉", desc:"特征与滤波、边缘检测、图像分割分类、目标检测、生物特征、行为分析、三维重建、图像生成"},
+  {name:"语音处理", desc:"响度/共振峰/基音、预处理量化、时频域特征、语音识别与合成、常用模型"},
+  {name:"自然语言处理", desc:"分词/词性/实体、句法分析、词表示、句子建模、机器翻译/问答/信息抽取"},
+  {name:"AI前沿与生成式大模型", desc:"扩散模型、GAN、多模态、联邦学习、预训练、RAG、RLHF、推理部署、智能体与具身智能"},
+  {name:"AI赋能千行百业", desc:"智能社会/交通/医疗/制造/创意/推荐/教育/机器人/科学研究、从业能力"},
+  {name:"AI安全与伦理", desc:"可信AI(可解释/安全/公正/隐私)、伦理原则、负责任AI系统"}
+];
+
+let QS = [];
+/* 数据在下方 QUESTIONS 数组中 */
+</script>
+<script id="qdata">
+const QUESTIONS = [
+/* ================= 1. 人工智能概述 ================= */
+{id:0,area:0,unit:"人工智能基本概念",type:"s",q:"人工智能（Artificial Intelligence）的核心目标是让计算机_______。",opts:["模拟并扩展人类智能行为","完全替代人类思维","只进行数值计算","只执行既定程序"],a:[0],ex:"人工智能研究如何让机器模拟、延伸和扩展人类智能，包括学习、推理、感知、决策等能力。它并不仅仅是执行固定程序。"},
+{id:1,area:0,unit:"人工智能基本概念",type:"s",q:"“人工智能”这一术语正式诞生于哪一年的达特茅斯会议？",opts:["1946年","1956年","1966年","1976年"],a:[1],ex:"1956年，约翰·麦卡锡（John McCarthy）等人在美国达特茅斯会议上正式提出“人工智能（AI）”概念，被视为AI学科诞生的标志。"},
+{id:2,area:0,unit:"人工智能基本概念",type:"j",q:"人工智能的起源可以追溯到20世纪50年代的达特茅斯会议。",a:true,ex:"1956年达特茅斯会议确立了“人工智能”学科，是AI公认的起点，本题说法正确。"},
+{id:3,area:0,unit:"人工智能的发展历史",type:"s",q:"以下哪一项属于人工智能主要流派中的“连接主义”的核心思想？",opts:["基于符号与逻辑规则进行推理","模拟人脑神经网络的连接与学习","通过环境反馈强化行为","利用遗传算法搜索最优解"],a:[1],ex:"连接主义（联结主义）以人工神经网络为代表，强调通过大量神经元的连接与权重学习；符号主义强调逻辑符号推理；行为主义强调感知-行动与环境交互。"},
+{id:4,area:0,unit:"人工智能的发展历史",type:"s",q:"专家系统是下列哪一流派的代表性成果？",opts:["连接主义","符号主义","行为主义","进化主义"],a:[1],ex:"专家系统把领域知识以“规则+推理机”的符号形式表示，属于符号主义流派的典型应用。"},
+{id:5,area:0,unit:"人工智能的发展历史",type:"m",q:"人工智能的三大主要流派包括_______。",opts:["符号主义","连接主义","行为主义","虚无主义"],a:[0,1,2],ex:"AI三大学派：符号主义（逻辑符号推理）、连接主义（神经网络）、行为主义（感知-行动-强化）。"},
+{id:6,area:0,unit:"人工智能的发展历史",type:"s",q:"深度学习（深度神经网络）属于哪一流派？",opts:["符号主义","行为主义","连接主义","逻辑主义"],a:[2],ex:"深度学习基于多层神经网络，通过连接和权重学习特征，属于连接主义。"},
+{id:7,area:0,unit:"智能计算系统",type:"j",q:"智能计算系统的定义与组成中不包括硬件部分。",a:false,ex:"智能计算系统通常由硬件（CPU/GPU等）、软件框架、数据与算法/模型共同组成，硬件是重要组成部分，故本题说法错误。"},
+{id:8,area:0,unit:"智能计算系统",type:"s",q:"一个完整的智能计算系统通常不包括下列哪一项？",opts:["计算硬件","软件与框架","数据资源","实体机器人工厂"],a:[3],ex:"智能计算系统一般包含硬件、软件/框架、数据、算法模型等，实体工厂并非其必要组成部分。"},
+{id:9,area:0,unit:"智能计算系统",type:"s",q:"智能计算系统中“算力”主要由下列哪类硬件提供？",opts:["CPU与GPU","打印机","显示器","键盘鼠标"],a:[0],ex:"算力主要由CPU、GPU、NPU/TPU等计算芯片提供，GPU尤其适合并行密集计算（如深度学习）。"},
+{id:10,area:0,unit:"人工智能应用",type:"s",q:"下列哪一项属于人工智能的典型应用领域？",opts:["图像识别","纯手写文档存储","传统打印","纸张装订"],a:[0],ex:"图像识别、语音识别、自然语言处理、自动驾驶、推荐系统等都是AI典型应用。"},
+{id:11,area:0,unit:"人工智能应用",type:"s",q:"自动驾驶汽车主要依赖AI中的哪类技术实现环境感知？",opts:["计算机视觉与传感器融合","数据库管理","文本加密","网页排版"],a:[0],ex:"自动驾驶通过摄像头、激光雷达等传感器获取环境信息，用计算机视觉和目标检测识别道路、车辆、行人等。"},
+{id:12,area:0,unit:"人工智能应用",type:"m",q:"以下属于人工智能典型应用场景的有_______。",opts:["智能语音助手","人脸识别门禁","个性化推荐系统","打印一份纯文本文件"],a:[0,1,2],ex:"智能语音助手、人脸识别、推荐系统均属于AI应用；纯文本打印不涉及智能。"},
+{id:13,area:0,unit:"人工智能应用",type:"s",q:"推荐系统（如电商、短视频推荐）主要依据用户数据进行_______。",opts:["按字母排序","个性化内容推荐","固定页面展示","随机播放"],a:[1],ex:"推荐系统利用用户行为与兴趣数据，通过机器学习建模实现个性化推荐。"},
+{id:14,area:0,unit:"人工智能基本概念",type:"s",q:"“弱人工智能（狭义AI）”指的是_______。",opts:["仅在特定任务上达到或接近人类水平的AI","具备通用智能、能解决任意问题的AI","完全自我意识觉醒的AI","超越人类所有能力的AI"],a:[0],ex:"弱/狭义AI只能完成特定任务（如图像识别、翻译）；通用人工智能AGI指能像人一样处理多种任务的AI，尚未实现。"},
+{id:15,area:0,unit:"人工智能基本概念",type:"j",q:"通用人工智能（AGI）目前已经实现并广泛应用。",a:false,ex:"目前广泛应用的是针对特定任务的狭义AI，通用人工智能AGI尚处于研究阶段，本题说法错误。"},
+{id:16,area:0,unit:"人工智能基本概念",type:"s",q:"图灵测试（Turing Test）主要用于检验_______。",opts:["机器能否在对话中让人类难以分辨其是人是机","机器的运算速度","机器的存储容量","机器的能耗"],a:[0],ex:"图灵测试由艾伦·图灵于1950年提出，若机器在对话中让提问者无法区分是人还是机器，则被认为具有智能。"},
+{id:17,area:0,unit:"人工智能基本概念",type:"s",q:"下列哪位科学家被称为“人工智能之父”之一，并创造了“人工智能”一词？",opts:["约翰·麦卡锡","艾伦·图灵","冯·诺依曼","蒂姆·伯纳斯-李"],a:[0],ex:"约翰·麦卡锡（John McCarthy）在1956年达特茅斯会议上首次使用“人工智能”一词。"},
+{id:18,area:0,unit:"通用大模型与专业大模型工具",type:"s",q:"下列哪一项属于“通用大模型”的典型代表？",opts:["GPT、文心一言、豆包等通用对话大模型","仅用于财务报税的专用系统","只处理某一品牌打印机的驱动软件","单一游戏规则引擎"],a:[0],ex:"通用大模型能处理文本、问答、翻译、代码等跨领域任务，GPT、文心一言、豆包等是典型代表。"},
+{id:19,area:0,unit:"通用大模型与专业大模型工具",type:"s",q:"“千学百科AI集成平台”属于_______。",opts:["专业集成大模型平台","硬件服务器","数据库软件","操作系统"],a:[0],ex:"千学百科是上海大学推出的专业集成大模型AI平台，将多个大模型能力集成，属于专业集成工具。"},
+{id:20,area:0,unit:"通用大模型与专业大模型工具",type:"j",q:"通用大模型只能处理单一领域的问题，不能跨领域使用。",a:false,ex:"通用大模型具备跨领域泛化能力，可同时处理写作、问答、翻译、编程等任务，故说法错误。"},
+{id:21,area:0,unit:"通用大模型与专业大模型工具",type:"m",q:"通用大模型通常具备的能力包括_______。",opts:["文本生成","自然语言问答","代码生成","翻译"],a:[0,1,2,3],ex:"通用大模型经过大规模预训练，具备文本生成、问答、代码、翻译等多项跨任务能力。"},
+{id:22,area:0,unit:"通用大模型与专业大模型工具",type:"s",q:"与大模型交互时，用于指导模型输出的输入文本称为_______。",opts:["提示词（Prompt）","网络地址","数据库索引","日志文件"],a:[0],ex:"提示词（Prompt）是用户输入给大模型的指令或问题，直接影响模型输出质量。"},
+{id:23,area:0,unit:"人工智能应用",type:"s",q:"某在线教育平台利用大模型根据学生答题情况动态调整学习路径，这体现了大模型在哪个行业的应用？",opts:["教育","农业养殖","建筑施工","采矿"],a:[0],ex:"根据学习情况个性化调整学习路径属于智慧教育领域的应用。"},
+{id:24,area:0,unit:"人工智能应用",type:"j",q:"人工智能在医疗领域的“AI看片”主要属于医学影像分析应用。",a:true,ex:"AI看片（医学影像辅助诊断）利用计算机视觉对CT、X光等影像进行分析，是AI医疗典型应用。"},
+{id:25,area:0,unit:"人工智能基本概念",type:"s",q:"下列对人工智能的描述，正确的是_______。",opts:["AI是基于数据与算法让机器获得类人能力","AI可以完全确定地预测未来一切事件","AI不需要数据也能学习","AI与人完全一样具有情感"],a:[0],ex:"AI通过数据驱动和算法建模获得类人能力；它依赖数据，且目前不具备真正的人类情感与自由意志。"},
+{id:26,area:0,unit:"人工智能的发展历史",type:"s",q:"人工智能发展经历了数次“浪潮”，第二次浪潮主要推动因素是_______。",opts:["深度学习和算力的提升","完全不需要计算","纯手工规则","放弃所有技术"],a:[0],ex:"随着大数据、GPU算力与深度学习算法的突破，AI进入新一轮快速发展浪潮。"},
+{id:27,area:0,unit:"人工智能的发展历史",type:"m",q:"推动人工智能快速发展的关键因素包括_______。",opts:["海量数据","强大算力（GPU等）","深度学习算法突破","稳定的传统工艺"],a:[0,1,2],ex:"AI发展由数据、算力、算法三大要素共同驱动。"},
+{id:28,area:0,unit:"通用大模型与专业大模型工具",type:"s",q:"专业（垂直）大模型与通用大模型的主要区别在于_______。",opts:["专业大模型面向特定领域进行专门训练与优化","专业大模型完全没有训练数据","专业大模型只能处理图像","通用大模型不能生成文本"],a:[0],ex:"专业/垂直大模型针对金融、医疗、法律等特定领域做专门训练与调优，领域能力更强；通用大模型覆盖面广。"},
+{id:29,area:0,unit:"人工智能基本概念",type:"j",q:"人工智能完全等于大数据，只要有数据就一定是人工智能。",a:false,ex:"人工智能需要算法与模型，大数据只是其中一环（数据要素），仅有数据不构成AI，说法错误。"},
+{id:30,area:0,unit:"人工智能的发展历史",type:"s",q:"2016年战胜人类围棋世界冠军的AlphaGo，其核心技术是_______。",opts:["深度强化学习与搜索","纯手工规则","随机猜测","数据库检索"],a:[0],ex:"AlphaGo结合深度神经网络与蒙特卡洛树搜索、强化学习，是深度强化学习的标志性成果。"},
+{id:31,area:0,unit:"人工智能的发展历史",type:"j",q:"AlphaGo的核心技术基于深度强化学习。",a:true,ex:"AlphaGo使用深度神经网络评估棋局并结合蒙特卡洛树搜索与强化学习进行训练，说法正确。"},
+{id:32,area:0,unit:"人工智能的发展历史",type:"s",q:"“行为主义”流派强调智能源于_______。",opts:["感知-行动-环境交互（强化学习）","符号逻辑推导","神经网络权重","数据库事务"],a:[0],ex:"行为主义（如强化学习）强调智能体通过与环境的交互反馈（奖励）来学习行为。"},
+{id:33,area:0,unit:"人工智能基本概念",type:"s",q:"机器学习与传统程序的主要区别在于_______。",opts:["程序从数据中自动学习规律而非逐条硬编码规则","程序不需要运行","程序不能处理数据","程序只能离线"],a:[0],ex:"机器学习通过数据自动学习模型规律，而传统程序靠人工编码明确规则。"},
+{id:34,area:0,unit:"人工智能基本概念",type:"s",q:"下列关于人工智能与人类智能的比较，正确的是_______。",opts:["AI在特定任务上可超越人类，但缺少真正的理解与情感","AI拥有完全等同于人的情感","AI永远不能超越人类任何能力","AI不需要输入数据"],a:[0],ex:"AI可在特定任务（如图像识别、棋类）超越人类，但缺乏人类的理解力、创造力与情感，不是完全等同。"},
+{id:35,area:0,unit:"人工智能应用",type:"s",q:"智能语音助手（如手机语音助手）主要依赖AI的哪类技术？",opts:["语音识别与自然语言理解","数据库索引","操作系统内核","网页渲染"],a:[0],ex:"语音助手先进行语音识别（ASR）将语音转为文本，再用自然语言理解（NLU）解析意图并回复。"},
+{id:36,area:0,unit:"人工智能应用",type:"j",q:"人脸识别属于计算机视觉领域的人工智能应用。",a:true,ex:"人脸识别通过计算机视觉技术检测、对齐、提取人脸特征并比对，是AI视觉典型应用。"},
+{id:37,area:0,unit:"通用大模型与专业大模型工具",type:"s",q:"使用网页版对话工具与大模型交互相比，调用大模型API的主要优势是_______。",opts:["可编程批量处理、成本与日志可审计","界面更漂亮","一定能获得更高准确率","不需要网络"],a:[0],ex:"API支持编程调用、批量处理，可通过系统提示词固定风格，且token费用、调用日志可审计，适合企业级集成。"},
+{id:38,area:0,unit:"通用大模型与专业大模型工具",type:"s",q:"下列哪个属于国内常见的通用大模型产品？",opts:["文心一言（百度）","Windows记事本","Photoshop","Excel"],a:[0],ex:"文心一言是百度的通用大模型对话产品；其他选项是工具软件，不属于大模型。"},
+{id:39,area:0,unit:"通用大模型与专业大模型工具",type:"s",q:"大模型在回答不熟悉的问题时可能“一本正经地胡编”，这种现象称为_______。",opts:["幻觉（Hallucination）","过拟合","欠拟合","梯度消失"],a:[0],ex:"大模型会生成看似合理但事实错误的内容，称为“幻觉”，需通过检索增强（RAG）、引用溯源等方法缓解。"},
+{id:40,area:0,unit:"通用大模型与专业大模型工具",type:"j",q:"提示词（Prompt）写得越清晰，大模型输出的质量通常越好。",a:true,ex:"清晰、具体、包含上下文的提示词能显著提升大模型输出的准确性与相关性。"},
+{id:41,area:0,unit:"通用大模型与专业大模型工具",type:"m",q:"下列属于大模型AI助手在实际中可能承担的角色或能力的有_______。",opts:["写作润色","代码补全与生成","数据问答分析","多语言翻译"],a:[0,1,2,3],ex:"大模型可承担写作、编程、数据分析问答、翻译等多种任务。"},
+{id:42,area:0,unit:"智能计算系统",type:"s",q:"智能计算系统的“智能”主要依赖于下列哪类要素？",opts:["算法与模型结合数据和算力","纯硬件数量","纯网速","纯显示器分辨率"],a:[0],ex:"智能计算系统通过算法+模型，在数据驱动和算力支撑下实现智能，三要素缺一不可。"},
+{id:43,area:0,unit:"智能计算系统",type:"j",q:"CPU适合大量高度并行的矩阵计算，是深度学习训练的主力硬件。",a:false,ex:"GPU（而非CPU）因其大规模并行核心更适合矩阵运算与深度学习训练；CPU擅长通用串行任务。"},
+{id:44,area:0,unit:"人工智能应用",type:"s",q:"智能推荐系统、智能交通调度、智能医疗影像等共同体现了AI的_______特征。",opts:["跨行业赋能应用","只能单机运行","完全脱离数据","不依赖算法"],a:[0],ex:"AI在各行各业广泛应用，体现其强大的跨行业赋能能力。"},
+{id:45,area:0,unit:"人工智能应用",type:"s",q:"智慧城市中利用摄像头和AI识别交通违章，主要属于_______应用。",opts:["计算机视觉与模式识别","文字排版","文件加密","数据库备份"],a:[0],ex:"利用视觉算法识别车辆、违章行为属于计算机视觉与模式识别在智慧交通中的应用。"},
+{id:46,area:0,unit:"人工智能基本概念",type:"s",q:"“人工智能、机器学习、深度学习”三者之间的关系是_______。",opts:["深度学习⊂机器学习⊂人工智能","三者互不相干","人工智能⊂机器学习⊂深度学习","机器学习⊂深度学习⊂人工智能"],a:[0],ex:"人工智能是总称；机器学习是实现AI的方法之一；深度学习是机器学习中基于深层神经网络的分支，故深度学习⊂机器学习⊂人工智能。"},
+{id:47,area:0,unit:"人工智能基本概念",type:"j",q:"深度学习是机器学习的一个分支，而机器学习又是人工智能的一个子领域。",a:true,ex:"层次关系：人工智能 > 机器学习 > 深度学习，说法正确。"},
+{id:48,area:0,unit:"人工智能应用",type:"s",q:"下列哪一项不属于人工智能的典型应用？",opts:["自动回复邮件模板（纯固定文字）","智能翻译","人脸支付","语音转文字"],a:[0],ex:"固定的邮件模板回复不涉及智能，其余均属AI应用。"},
+{id:49,area:0,unit:"人工智能发展史",type:"s",q:"以下哪一事件常被视为人工智能的又一次热潮的标志？",opts:["深度学习在图像识别（ImageNet）上的突破","发明打印机","发布office软件","推出USB接口"],a:[0],ex:"2012年前后深度学习在ImageNet竞赛取得突破，推动了新一轮AI热潮。"},
+{id:50,area:0,unit:"通用大模型与专业大模型工具",type:"s",q:"“千学百科AI集成平台”的主要功能定位是_______。",opts:["集成多种大模型能力供教学与科研使用","代替操作系统","只做数据备份","只负责网络连接"],a:[0],ex:"千学百科AI集成平台集成多类大模型能力，面向上海高校教学科研场景提供AI应用支持。"},
+/* ================= 2. 数学基础与计算思维 ================= */
+{id:51,area:1,unit:"线性代数基础",type:"s",q:"矩阵A为 m×n、矩阵B为 n×p，则A×B的结果矩阵维度是_______。",opts:["m×p","n×n","m×n","p×m"],a:[0],ex:"矩阵相乘要求A的列数等于B的行数（均为n），结果为m×p矩阵。"},
+{id:52,area:1,unit:"线性代数基础",type:"s",q:"两个向量的点积（内积）运算结果是_______。",opts:["一个标量","一个向量","一个矩阵","一个张量"],a:[0],ex:"向量点积是对应元素相乘再求和，结果为标量。"},
+{id:53,area:1,unit:"线性代数基础",type:"s",q:"单位矩阵的特点是_______。",opts:["对角线上为1、其余为0","所有元素都为0","所有元素都为1","必须为2×2"],a:[0],ex:"单位矩阵I主对角线元素为1、其余为0，任意矩阵与相应单位矩阵相乘结果不变。"},
+{id:54,area:1,unit:"线性代数基础",type:"j",q:"矩阵的转置是把矩阵的行和列互换。",a:true,ex:"转置Aᵀ将A的行变成列、列变成行，定义正确。"},
+{id:55,area:1,unit:"线性代数基础",type:"s",q:"PCA（主成分分析）等降维方法主要基于线性代数中的_______运算。",opts:["特征值与特征向量","加法交换","行交换","取负"],a:[0],ex:"PCA通过协方差矩阵的特征分解获取主成分方向（特征向量），据此降维。"},
+{id:56,area:1,unit:"线性代数基础",type:"s",q:"在机器学习中，单个样本的特征向量一般表示为_______。",opts:["向量","标量","布尔值","字符串"],a:[0],ex:"一个样本的多个特征组成特征向量，多个样本组成特征矩阵。"},
+{id:57,area:1,unit:"线性代数基础",type:"m",q:"线性代数在机器学习中的应用包括_______。",opts:["数据以矩阵/向量表示","矩阵乘法计算","特征值与降维(PCA)","模型参数更新"],a:[0,1,2,3],ex:"线性代数是机器学习基石：数据表示、矩阵运算、降维、参数优化等均用到。"},
+{id:58,area:1,unit:"线性代数基础",type:"s",q:"在深度学习中，通常用更高阶的张量来表示输入数据。一个RGB彩色图像batch（批）通常表示为_______。",opts:["4维张量(N,C,H,W)","1维向量","标量","2维矩阵"],a:[0],ex:"图像batch一般用四维张量表示：N批大小、C通道、H高、W宽。"},
+{id:59,area:1,unit:"线性代数基础",type:"j",q:"两个同形状矩阵可以进行逐元素（Hadamard）相乘。",a:true,ex:"逐元素相乘要求两矩阵形状相同，对应位置元素相乘，说法正确。"},
+{id:60,area:1,unit:"线性代数基础",type:"s",q:"一般情况下，矩阵乘法A×B与B×A的结果_______。",opts:["不一定相等（乘法不可交换）","一定相等","一定为零矩阵","只差一个符号"],a:[0],ex:"矩阵乘法一般不满足交换律，A×B≠B×A是常见的。"},
+{id:61,area:1,unit:"微积分基础",type:"s",q:"函数在某一点的导数表示的是_______。",opts:["该点函数的变化率（斜率）","函数的总面积","函数的最大值","函数的零点"],a:[0],ex:"导数是函数在该点处的瞬时变化率，几何意义为切线斜率。"},
+{id:62,area:1,unit:"微积分基础",type:"s",q:"多元函数对各个自变量求偏导组成的向量称为_______。",opts:["梯度","行列式","特征值","卷积"],a:[0],ex:"梯度是多元函数对每个变量偏导数构成的向量，指向函数值增长最快的方向。"},
+{id:63,area:1,unit:"微积分基础",type:"s",q:"梯度下降法中，参数更新公式 w=w−η·∂L/∂w 中的 η 表示_______。",opts:["学习率","损失函数","梯度","激活函数"],a:[0],ex:"η为学习率，控制每次沿负梯度方向更新参数的步长。"},
+{id:64,area:1,unit:"微积分基础",type:"j",q:"深度学习反向传播算法依赖微积分中的链式法则。",a:true,ex:"反向传播通过链式法则逐层计算损失对参数的梯度，说法正确。"},
+{id:65,area:1,unit:"微积分基础",type:"s",q:"定积分在几何上通常表示_______。",opts:["曲线与坐标轴围成的面积","切线斜率","函数极值点","随机变量期望值"],a:[0],ex:"定积分描述函数曲线与坐标轴围成的面积，反映累积量。"},
+{id:66,area:1,unit:"微积分基础",type:"s",q:"损失函数关于网络参数的梯度可通过哪种方法高效计算？",opts:["反向传播（BP）","随机猜测","暴力枚举","手工查表"],a:[0],ex:"反向传播利用链式法则从输出层向前逐层计算各参数梯度，训练神经网络的标准方法。"},
+{id:67,area:1,unit:"微积分基础",type:"m",q:"微积分在深度学习中的应用包括_______。",opts:["损失函数求导","计算梯度用于优化","反向传播","积分求期望"],a:[0,1,2],ex:"求导、梯度、反向传播都是微积分在深度学习中的核心应用。"},
+{id:68,area:1,unit:"微积分基础",type:"s",q:"“求导”和“求积分”属于数学中的哪一分支？",opts:["微积分","集合论","图论","数论"],a:[0],ex:"导数与积分是微积分（Calculus）的两大基本运算。"},
+{id:69,area:1,unit:"概率与统计基础",type:"s",q:"一个事件发生的概率取值范围是_______。",opts:["0到1之间","−1到1之间","0到100","任意实数"],a:[0],ex:"概率P∈[0,1]，0表示不可能，1表示必然。"},
+{id:70,area:1,unit:"概率与统计基础",type:"s",q:"已知P(A)=0.5、P(B)=0.4且A、B独立，则P(A∩B)=_______。",opts:["0.20","0.10","0.90","0.50"],a:[0],ex:"独立事件P(A∩B)=P(A)·P(B)=0.5×0.4=0.2。"},
+{id:71,area:1,unit:"概率与统计基础",type:"s",q:"在已知“结果B发生”的条件下求“原因A发生”的概率，最合适的公式是_______。",opts:["贝叶斯公式","勾股定理","傅里叶变换","拉普拉斯变换"],a:[0],ex:"贝叶斯公式P(A|B)=P(B|A)P(A)/P(B)用于由结果反推原因的概率。"},
+{id:72,area:1,unit:"概率与统计基础",type:"j",q:"若事件A、B相互独立，则P(A|B)=P(A)。",a:true,ex:"独立意味着B的发生不影响A的概率，故条件概率等于无条件概率。"},
+{id:73,area:1,unit:"概率与统计基础",type:"s",q:"随机变量的数学期望（均值）表示其取值的_______。",opts:["平均水平（加权平均）","离散程度","最大概率值","中位数"],a:[0],ex:"期望是随机变量按其概率分布的加权平均值，衡量中心位置。"},
+{id:74,area:1,unit:"概率与统计基础",type:"s",q:"衡量随机变量取值分散程度（波动）的统计量是_______。",opts:["方差/标准差","期望","中位数","众数"],a:[0],ex:"方差与标准差反映数据偏离均值的程度，越大波动越大。"},
+{id:75,area:1,unit:"概率与统计基础",type:"s",q:"身高、考试成绩等大量自然现象的分布常近似服从_______。",opts:["正态分布","均匀分布","二项分布","泊松分布"],a:[0],ex:"中心极限定理使大量独立随机变量之和近似服从正态分布，自然界常见。"},
+{id:76,area:1,unit:"概率与统计基础",type:"m",q:"概率统计在机器学习中的作用包括_______。",opts:["描述数据不确定性","贝叶斯分类器","模型性能评估","假设检验"],a:[0,1,2,3],ex:"概率统计贯穿ML：不确定性建模、贝叶斯方法、评估指标（准确率/召回率）等。"},
+{id:77,area:1,unit:"概率与统计基础",type:"s",q:"“某次抛硬币正面朝上的概率是0.5”描述的是一个_______。",opts:["概率模型","确定事件","必然结论","零概率事件"],a:[0],ex:"用概率描述不确定事件的可能性，属于概率模型。"},
+{id:78,area:1,unit:"概率与统计基础",type:"j",q:"样本均值可以用来估计总体均值。",a:true,ex:"统计推断中常用样本统计量（如均值）估计总体参数，说法正确。"},
+{id:79,area:1,unit:"计算思维概述",type:"s",q:"计算思维的核心要素通常包括_______。",opts:["抽象、分解、算法与评估","打字、排版、打印","记忆、背诵、默写","焊接、接线、组装"],a:[0],ex:"计算思维强调抽象化、分解、算法设计、模式识别与评估等能力，而非具体操作。"},
+{id:80,area:1,unit:"计算思维概述",type:"s",q:"把复杂问题拆分为若干小问题逐步解决，体现的是计算思维中的_______。",opts:["分解（Decomposition）","抽象","模式识别","并行"],a:[0],ex:"分解（分而治之）把大问题拆成可独立处理的小问题。"},
+{id:81,area:1,unit:"计算思维概述",type:"j",q:"计算思维只与编程相关，与日常生活无关。",a:false,ex:"计算思维是一种通用问题解决思维，广泛用于日常生活与各学科，不只是编程。"},
+{id:82,area:1,unit:"计算思维概述",type:"m",q:"计算思维包含的核心能力有_______。",opts:["分解问题","抽象概括","算法设计","模式识别"],a:[0,1,2,3],ex:"计算思维核心：分解、抽象、算法、模式识别与评估。"},
+{id:83,area:1,unit:"计算思维概述",type:"s",q:"识别问题中的规律与相似性，属于计算思维中的_______。",opts:["模式识别","数据存储","文件管理","网络配置"],a:[0],ex:"模式识别指从多个实例中寻找规律，用于泛化与复用。"},
+{id:84,area:1,unit:"数学建模基础",type:"s",q:"数学建模的基本流程通常是_______。",opts:["问题分析→模型假设与建立→求解→验证与改进","直接写代码→不用建模","随意猜测→提交","只画图不计算"],a:[0],ex:"建模一般经历明确问题、作假设、建模型、求解、检验与改进等步骤。"},
+{id:85,area:1,unit:"数学建模基础",type:"s",q:"在数学建模中，为便于求解而对现实问题做的合理简化称为_______。",opts:["模型假设","精确复制","随机丢弃","完全忽略"],a:[0],ex:"模型假设是对次要因素进行合理简化，是建模的重要环节。"},
+{id:86,area:1,unit:"数学建模基础",type:"j",q:"数学模型是对现实对象的一种抽象和近似，不一定完全精确。",a:true,ex:"数学模型在合理假设下近似描述现实，允许一定误差，说法正确。"},
+{id:87,area:1,unit:"Python程序设计",type:"s",q:"在Python中，不可变的序列类型是_______。",opts:["元组（tuple）","列表（list）","字典（dict）","集合（set）"],a:[0],ex:"元组不可变；列表、字典、集合可变。"},
+{id:88,area:1,unit:"Python程序设计",type:"s",q:"Python中用于定义函数的关键字是_______。",opts:["def","func","function","define"],a:[0],ex:"Python用 def 关键字定义函数。"},
+{id:89,area:1,unit:"Python程序设计",type:"s",q:"Python中的字典（dict）是一种_______结构。",opts:["键值对映射","有序链表","二叉树","队列"],a:[0],ex:"字典以key-value键值对存储，按键快速查找。"},
+{id:90,area:1,unit:"Python程序设计",type:"s",q:"Python列表推导式 [x*2 for x in range(5)] 的结果是_______。",opts:["[0,2,4,6,8]","[2,4,6,8,10]","[1,2,3,4,5]","[0,1,2,3,4]"],a:[0],ex:"range(5)生成0~4，乘2得[0,2,4,6,8]。"},
+{id:91,area:1,unit:"Python程序设计",type:"j",q:"Python使用缩进（空格/制表符）来划分代码块。",a:true,ex:"Python以缩进表达代码块层次，无需花括号，说法正确。"},
+{id:92,area:1,unit:"Python程序设计",type:"m",q:"下列属于Python内置常用数据类型的有_______。",opts:["int","float","list","dict"],a:[0,1,2,3],ex:"Python内置类型包括数值(int/float)、字符串、列表、字典、集合、元组等。"},
+{id:93,area:1,unit:"Python程序设计",type:"s",q:"Python中处理可能出错代码块常用的结构是_______。",opts:["try/except","if/else","while/break","import/as"],a:[0],ex:"try/except用于捕获并处理异常，保证程序健壮性。"},
+{id:94,area:1,unit:"Python程序设计",type:"s",q:"在Python中，表示逻辑“真”的关键字是_______。",opts:["True","TRUE","1(true)","yes"],a:[0],ex:"Python中布尔真值为 True，假值为 False。"},
+{id:95,area:1,unit:"算法与算法评价",type:"s",q:"算法的时间复杂度主要衡量的是_______。",opts:["运行时间随输入规模增长的趋势","代码的行数","占用的内存字节","变量的个数"],a:[0],ex:"时间复杂度用大O描述运行时间随输入规模n的增长量级，如O(n)、O(n²)。"},
+{id:96,area:1,unit:"算法与算法评价",type:"s",q:"二分查找算法的时间复杂度是_______。",opts:["O(log n)","O(n)","O(n²)","O(1)"],a:[0],ex:"二分查找每次减半，时间复杂度为对数级O(log n)，前提是数据有序。"},
+{id:97,area:1,unit:"算法与算法评价",type:"s",q:"对n个元素进行线性查找（顺序查找）的最坏时间复杂度是_______。",opts:["O(n)","O(log n)","O(n²)","O(1)"],a:[0],ex:"顺序查找最坏需遍历所有元素，为O(n)。"},
+{id:98,area:1,unit:"算法与算法评价",type:"s",q:"衡量算法运行时额外占用内存空间多少的量称为_______。",opts:["空间复杂度","时间复杂度","数据复杂度","网络复杂度"],a:[0],ex:"空间复杂度描述算法运行所需额外存储空间的量级。"},
+{id:99,area:1,unit:"算法与算法评价",type:"m",q:"下列属于经典算法的有_______。",opts:["排序算法（冒泡/快速等）","查找算法（二分等）","递归","图遍历（DFS/BFS）"],a:[0,1,2,3],ex:"排序、查找、递归、图遍历等都是经典算法。"},
+{id:100,area:1,unit:"算法与算法评价",type:"j",q:"使用二分查找前，要求数据必须是有序的。",a:true,ex:"二分查找依赖有序序列才能正确判断目标所在区间，说法正确。"},
+{id:101,area:1,unit:"操作系统原理基础",type:"s",q:"操作系统最核心的功能是_______。",opts:["管理计算机硬件资源并为软件提供接口","制造硬件","编译网页","打印文档"],a:[0],ex:"操作系统负责进程/内存/文件/设备管理等，作为硬件与应用的桥梁。"},
+{id:102,area:1,unit:"操作系统原理基础",type:"s",q:"进程与线程的关系，下列说法正确的是_______。",opts:["进程是资源分配的基本单位，线程是CPU调度的基本单位","线程独立拥有内存","一个进程只能有一个线程","线程没有独立栈"],a:[0],ex:"进程拥有独立资源，线程是进程内的执行单元，共享进程资源，是调度基本单位。"},
+{id:103,area:1,unit:"操作系统原理基础",type:"s",q:"在操作系统中，对文件进行组织、存取和管理的是_______。",opts:["文件系统","显卡驱动","浏览器","声卡驱动"],a:[0],ex:"文件系统负责文件的创建、读写、目录组织与权限管理。"},
+{id:104,area:1,unit:"操作系统原理基础",type:"j",q:"Linux是一个开源、多用户、多任务的操作系统。",a:true,ex:"Linux开源、支持多用户多任务，广泛应用于服务器，说法正确。"},
+{id:105,area:1,unit:"linux操作命令",type:"s",q:"Linux中列出当前目录下文件的命令是_______。",opts:["ls","cd","pwd","mkdir"],a:[0],ex:"ls（list）列出目录内容；cd切换目录、pwd显示当前路径、mkdir创建目录。"},
+{id:106,area:1,unit:"linux操作命令",type:"s",q:"Linux中切换当前工作目录的命令是_______。",opts:["cd","cat","echo","rm"],a:[0],ex:"cd用于切换目录，如 cd /home。"},
+{id:107,area:1,unit:"linux操作命令",type:"s",q:"Linux中显示当前所在路径的命令是_______。",opts:["pwd","ls","cp","mv"],a:[0],ex:"pwd（print working directory）打印当前工作目录绝对路径。"},
+{id:108,area:1,unit:"linux操作命令",type:"s",q:"Linux中新建目录的命令是_______。",opts:["mkdir","touch","find","grep"],a:[0],ex:"mkdir创建目录；touch创建空文件；find查找；grep文本搜索。"},
+{id:109,area:1,unit:"linux操作命令",type:"m",q:"下列属于Linux常用命令的有_______。",opts:["ls","cd","cp/mv/rm","grep"],a:[0,1,2,3],ex:"ls列目录、cd切换、cp拷贝、mv移动、rm删除、grep检索文本等均为Linux常用命令。"},
+{id:110,area:1,unit:"linux操作命令",type:"s",q:"Linux文件权限中，-rwxr-xr-- 表示文件所有者对该文件_______。",opts:["拥有读、写、执行权限","只读","无权限","只执行"],a:[0],ex:"权限共9位分三组（属主/组/其他），前三位rwx为属主读、写、执行权限。"},
+{id:111,area:1,unit:"linux操作命令",type:"s",q:"Linux中查看文件内容（输出到屏幕）的命令是_______。",opts:["cat","ls","cd","pwd"],a:[0],ex:"cat用于连接并显示文件内容，是最常用的查看命令之一。"},
+{id:112,area:1,unit:"linux操作命令",type:"j",q:"Linux中 rm -rf 命令可以删除目录及其内容，且不会放入回收站。",a:true,ex:"rm -rf 强制递归删除，删除后不可恢复（除非备份），需谨慎使用。"},
+{id:113,area:1,unit:"linux操作命令",type:"s",q:"Linux中给命令执行添加超级用户（root）权限的前缀命令是_______。",opts:["sudo","cd","cat","grep"],a:[0],ex:"sudo允许普通用户以root权限执行命令。"},
+{id:114,area:1,unit:"算法与算法评价",type:"s",q:"对于快速排序（平均情况），其时间复杂度约为_______。",opts:["O(n log n)","O(n)","O(n²)","O(log n)"],a:[0],ex:"快速排序平均时间复杂度为O(n log n)，最坏为O(n²)。"},
+{id:115,area:1,unit:"Python程序设计",type:"s",q:"Python中 for i in range(1,5) 循环体将执行几次？",opts:["4次","5次","1次","无限次"],a:[0],ex:"range(1,5)生成1,2,3,4共4个数，循环4次。"},
+/* ================= 3. 生成式AI三要素基础 ================= */
+{id:116,area:2,unit:"数据-语料采集",type:"s",q:"人工智能（生成式AI）的三大基本要素是_______。",opts:["数据、算法、算力","CPU、内存、硬盘","图像、语音、文字","模型、接口、界面"],a:[0],ex:"数据、算法、算力是AI三大要素，缺一不可。"},
+{id:117,area:2,unit:"数据-语料采集",type:"s",q:"为训练大语言模型，从互联网、书籍等处大量收集文本的过程称为_______。",opts:["语料采集","模型压缩","参数剪枝","梯度裁剪"],a:[0],ex:"语料采集是获取大规模训练文本的环节，是预训练的基础。"},
+{id:118,area:2,unit:"数据-语料采集",type:"s",q:"下列哪一项不是数据标注的常见类型？",opts:["数据清洗","图像分类","实体识别","语音转写"],a:[0],ex:"数据标注包括图像分类、目标框选、实体识别、语音转写等；数据清洗是数据处理环节，不属于标注类型。"},
+{id:119,area:2,unit:"数据-语料采集",type:"j",q:"语料采集时，应注重数据的质量、多样性，并注意版权与隐私合规。",a:true,ex:"高质量、多样且合规的数据语料是训练出好模型的前提。"},
+{id:120,area:2,unit:"数据-数据标注",type:"s",q:"给图像标注出“猫/狗”标签，属于_______标注。",opts:["图像分类标注","语音转写","句法树标注","时序预测"],a:[0],ex:"对整张图像赋予类别标签是图像分类标注。"},
+{id:121,area:2,unit:"数据-数据标注",type:"s",q:"在文本中标记出“人名、地名、机构名”等实体的标注方式属于_______。",opts:["命名实体识别标注","情感标注","分词标注","机器翻译"],a:[0],ex:"命名实体识别（NER）标注用于标记文本中的专有实体。"},
+{id:122,area:2,unit:"数据-数据标注",type:"m",q:"下列属于数据标注常见任务的有_______。",opts:["图像分类","目标检测框选","实体识别","语音转写"],a:[0,1,2,3],ex:"图像分类、目标框选、实体识别、语音转写等都是常见标注任务。"},
+{id:123,area:2,unit:"数据-数据管理",type:"s",q:"在划分数据集时，通常把数据分为训练集、验证集和_______。",opts:["测试集","备份集","噪声集","空集"],a:[0],ex:"标准划分为训练集（训练）、验证集（调参）、测试集（最终评估）。"},
+{id:124,area:2,unit:"数据-数据管理",type:"s",q:"测试集主要用于_______。",opts:["最终评估模型泛化能力","训练模型参数","调整学习率","做数据增强"],a:[0],ex:"测试集不参与训练，用于评估模型在新数据上的泛化表现。"},
+{id:125,area:2,unit:"数据-数据管理",type:"j",q:"验证集可以用来调整模型的超参数（如学习率）。",a:true,ex:"验证集用于模型选择与超参数调优，测试集才做最终评估。"},
+{id:126,area:2,unit:"数据-数据管理",type:"s",q:"当训练集中某类样本远多于其他类时，模型易产生_______。",opts:["类别不平衡导致的偏差","无任何影响","模型变轻","训练变快"],a:[0],ex:"类别不平衡会使模型偏向多数类，需用重采样、加权等方法缓解。"},
+{id:127,area:2,unit:"数据-数据管理",type:"s",q:"对重复、错误、缺失的数据进行处理，以提高数据质量的过程称为_______。",opts:["数据清洗","模型部署","特征提取","梯度下降"],a:[0],ex:"数据清洗包括去重、纠错、补缺等，提升训练数据质量。"},
+{id:128,area:2,unit:"算法-机器学习概述",type:"s",q:"机器学习通过_______自动改进性能。",opts:["从数据中学习规律","人工逐条写规则","随机打乱代码","增大字体"],a:[0],ex:"机器学习从数据中自动学习规律与模式，而非人工编码规则。"},
+{id:129,area:2,unit:"算法-机器学习概述",type:"s",q:"使用带标签的数据（输入-输出对）训练模型，属于_______学习。",opts:["有监督学习","无监督学习","强化学习","半监督"],a:[0],ex:"有监督学习利用带标签样本学习输入到输出的映射。"},
+{id:130,area:2,unit:"算法-机器学习概述",type:"s",q:"只给数据而不给标签，让模型自行发现结构或分组，属于_______学习。",opts:["无监督学习","有监督学习","强化学习","迁移学习"],a:[0],ex:"无监督学习在无标签数据上发现内在结构（如聚类、降维）。"},
+{id:131,area:2,unit:"算法-深度学习概述",type:"s",q:"深度学习与传统机器学习的重要区别在于深度学习能够_______。",opts:["自动学习多层特征表示","无需任何数据","只能处理小数据","不需要参数"],a:[0],ex:"深度学习通过深层网络自动逐层学习特征，减少人工特征工程。"},
+{id:132,area:2,unit:"算法-优化算法概述",type:"s",q:"最常用的随机梯度下降优化器（SGD）更新参数的依据是_______。",opts:["损失函数关于参数的梯度","数据总量","模型层数","输入尺寸"],a:[0],ex:"SGD利用损失对参数的梯度，沿负梯度方向更新参数以减小损失。"},
+{id:133,area:2,unit:"算法-优化算法概述",type:"m",q:"下列属于深度学习常用优化算法的有_______。",opts:["SGD","Adam","Adagrad","随机猜测"],a:[0,1,2],ex:"SGD、Adam、Adagrad等都是常用优化器；随机猜测不是优化算法。"},
+{id:134,area:2,unit:"算法-优化算法概述",type:"s",q:"损失函数（Loss Function）用于衡量_______。",opts:["模型预测值与真实值的差异","模型参数数量","训练数据条数","网络层数"],a:[0],ex:"损失函数量化预测与真实标签之间的差距，训练目标是最小化损失。"},
+{id:135,area:2,unit:"算力-CPU与GPU",type:"s",q:"相比CPU，GPU更适合深度学习训练的主要原因是_______。",opts:["拥有大量并行计算核心，适合矩阵运算","主频更高","内存更大","体积更小"],a:[0],ex:"GPU有数千个并行核心，擅长大规模并行矩阵运算，特别适合神经网络训练。"},
+{id:136,area:2,unit:"算力-CPU与GPU",type:"j",q:"深度学习训练时使用GPU通常能显著加速计算。",a:true,ex:"GPU并行计算能力强，可显著加速神经网络训练与推理。"},
+{id:137,area:2,unit:"算力-软件框架与工具",type:"s",q:"下列不属于主流深度学习框架的是_______。",opts:["Photoshop","PyTorch","TensorFlow","MindSpore"],a:[0],ex:"PyTorch、TensorFlow、MindSpore、PaddlePaddle是主流DL框架；Photoshop是图像处理软件。"},
+{id:138,area:2,unit:"算力-软件框架与工具",type:"m",q:"下列属于主流深度学习框架的有_______。",opts:["PyTorch","TensorFlow","MindSpore","PaddlePaddle"],a:[0,1,2,3],ex:"PyTorch、TensorFlow、MindSpore、飞桨PaddlePaddle均为主流深度学习框架。"},
+{id:139,area:2,unit:"算力-并行与异构计算",type:"s",q:"同时使用CPU、GPU、NPU等多种计算设备协同工作完成计算的方式称为_______。",opts:["异构计算","顺序计算","单核计算","内存计算"],a:[0],ex:"异构计算让不同类型计算单元（CPU/GPU/NPU）各司其职、协同加速。"},
+{id:140,area:2,unit:"算力-并行与异构计算",type:"s",q:"将一个大模型训练任务切分到多台机器或多张GPU卡上同时进行，属于_______。",opts:["分布式并行训练","单机串行","模型压缩","数据增广"],a:[0],ex:"分布式训练把计算与数据分布到多设备并行，解决单卡显存与算力不足。"},
+{id:141,area:2,unit:"算力-并行与异构计算",type:"s",q:"训练时一次同时处理的一批样本称为_______。",opts:["batch（批）","epoch","learning rate","param"],a:[0],ex:"batch是一次前向/反向传播使用的样本集合；epoch指完整遍历数据集一次。"},
+{id:142,area:2,unit:"算力-并行与异构计算",type:"j",q:"适当增大训练batch size可以更好地利用GPU并行计算能力。",a:true,ex:"更大batch能提高GPU利用率与训练吞吐，但需注意显存上限与收敛稳定性。"},
+{id:143,area:2,unit:"算力-并行与异构计算",type:"s",q:"用较低精度（如FP16）配合高精度（FP32）混合训练，称为_______。",opts:["混合精度训练","量化部署","模型蒸馏","梯度爆炸"],a:[0],ex:"混合精度训练用FP16加速、FP32保持精度，可提升训练速度并减少显存。"},
+{id:144,area:2,unit:"算力-CPU与GPU",type:"m",q:"下列属于AI计算硬件（算力载体）的有_______。",opts:["GPU","NPU/TPU","CPU集群","普通U盘"],a:[0,1,2],ex:"GPU、NPU、TPU、CPU集群都是AI算力载体；U盘是存储介质。"},
+{id:145,area:2,unit:"算力-CPU与GPU",type:"s",q:"在服务器上训练大模型时，决定能否装下模型与中间数据的关键硬件指标是_______。",opts:["显存（VRAM）/内存容量","屏幕分辨率","键盘类型","网线长度"],a:[0],ex:"模型参数、梯度、激活值等都需要显存/内存承载，容量不足会导致OOM。"},
+{id:146,area:2,unit:"算法-优化算法概述",type:"s",q:"学习率过大会导致训练出现_______问题。",opts:["参数震荡不收敛甚至发散","训练更慢","模型变小","数据增多"],a:[0],ex:"学习率过大会使参数更新步长过大、在最优值附近震荡甚至发散；过小则收敛慢。"},
+{id:147,area:2,unit:"算法-优化算法概述",type:"j",q:"学习率是训练时需调优的重要超参数之一。",a:true,ex:"学习率是典型超参数，过大过小都影响训练效果，需要调节。"},
+{id:148,area:2,unit:"数据-语料采集",type:"s",q:"为保证大模型训练效果，训练语料应尽量做到_______。",opts:["规模大、质量高、多样性强","数量越少越好","只保留一种格式","全部去除"],a:[0],ex:"训练语料需要大规模、高质量、多样性，才能学习丰富规律。"},
+{id:149,area:2,unit:"数据-数据管理",type:"s",q:"训练数据中若包含大量个人敏感信息，训练前通常应_______。",opts:["进行脱敏/匿名化处理","原样保留","放大展示","直接公开"],a:[0],ex:"为保护隐私与合规，训练前应对敏感个人信息做脱敏或匿名化处理。"},
+{id:150,area:2,unit:"算法-机器学习概述",type:"s",q:"“机器翻译”“图像分类”等任务，模型学习的是输入到输出的_______。",opts:["映射关系","物理位移","电路连接","网络地址"],a:[0],ex:"有监督学习本质是学习输入特征到输出标签的映射函数。"},
+{id:151,area:2,unit:"算力-软件框架与工具",type:"s",q:"在深度学习框架中，自动计算梯度的机制称为_______。",opts:["自动微分（autograd）","自动排版","自动充电","自动缩放"],a:[0],ex:"主流框架通过自动微分自动计算梯度，免去手工推导导数。"},
+{id:152,area:2,unit:"算力-并行与异构计算",type:"s",q:"大模型训练中对梯度进行裁剪（gradient clipping）主要是为了_______。",opts:["防止梯度爆炸","增大损失","减少数据","加速下载"],a:[0],ex:"梯度裁剪限制梯度范数，防止梯度爆炸，稳定训练。"},
+{id:153,area:2,unit:"数据-数据管理",type:"s",q:"将原始文本切分为模型可处理的token（词元）的过程，属于数据处理的_______。",opts:["分词/令牌化","压缩文件","加密","打印"],a:[0],ex:"token化把文本切分为子词/词元，是大模型输入处理的第一步。"},
+{id:154,area:2,unit:"数据-数据标注",type:"j",q:"高质量的数据标注对模型性能有重要影响。",a:true,ex:"标注质量直接影响监督学习模型的学习效果，标注错误会引入噪声。"},
+{id:155,area:2,unit:"算力-并行与异构计算",type:"s",q:"在多卡训练中，各设备之间需要频繁交换梯度等信息，这依赖高速的_______。",opts:["互连（如NVLink、InfiniBand）","打印机","显示器","键盘"],a:[0],ex:"分布式训练需设备间高速互连交换梯度，NVLink、InfiniBand等降低通信瓶颈。"},
+{id:156,area:2,unit:"数据-数据管理",type:"s",q:"同一份数据既用于调参又用于最终评估，会造成_______。",opts:["过拟合评估偏差（信息泄露）","训练更慢","模型变小","无影响"],a:[0],ex:"测试集参与调参会导致评估乐观偏差，应严格分离验证集与测试集。"},
+{id:157,area:2,unit:"算法-深度学习概述",type:"s",q:"深度学习中“深度”通常指_______。",opts:["神经网络的层数较多","数据的条数","输入维度","输出类别"],a:[0],ex:"“深度”指网络隐藏层数量多，能学习更抽象的高层特征。"},
+{id:158,area:2,unit:"算力-CPU与GPU",type:"s",q:"在GPU内存不足导致训练报错（OOM）时，下列哪种做法最合理？",opts:["减小batch size或模型尺寸","删除操作系统","增加显示器","降低分辨率"],a:[0],ex:"OOM通常通过减小batch、降低精度、模型并行等方式缓解。"},
+{id:159,area:2,unit:"算法-优化算法概述",type:"s",q:"Adam优化器相比普通SGD的优势之一是_______。",opts:["自适应学习率、收敛更稳定","完全不需要梯度","保证零损失","不需要数据"],a:[0],ex:"Adam基于梯度的一阶、二阶矩自适应调整学习率，训练更稳定、收敛更快。"},
+{id:160,area:2,unit:"数据-语料采集",type:"j",q:"训练大模型的语料规模通常越大越好，但也需要保证质量与多样性。",a:true,ex:"语料既要大规模，也要高质量、多样，才能让模型学到广泛知识。"},
+
+/* ================= 4. 逻辑推理与知识图谱 ================= */
+{id:161,area:3,unit:"谓词逻辑表示法",type:"s",q:"在谓词逻辑中，“小明喜欢苹果”通常表示为_______。",opts:["喜欢(小明,苹果)","小明->苹果","苹果:小明","喜欢&&小明"],a:[0],ex:"谓词逻辑用“谓词(个体1,个体2)”的形式表示关系，如Likes(XiaoMing,Apple)。"},
+{id:162,area:3,unit:"谓词逻辑表示法",type:"s",q:"谓词逻辑相比命题逻辑的主要优势是_______。",opts:["能表达对象、关系和量词，表达力更强","不支持量词","只能表达单个命题","无法表示个体"],a:[0],ex:"命题逻辑只能表示完整命题，谓词逻辑可表示个体、关系与量词，表达力更强。"},
+{id:163,area:3,unit:"谓词逻辑表示法",type:"s",q:"符号∀表示_______量词。",opts:["全称","存在","唯一","否定"],a:[0],ex:"∀为全称量词，表示“所有的”；∃为存在量词，表示“存在某个”。"},
+{id:164,area:3,unit:"谓词逻辑表示法",type:"s",q:"符号∃表示_______量词。",opts:["存在","全称","矛盾","蕴含"],a:[0],ex:"∃为存在量词，表示“存在某个对象满足某性质”。"},
+{id:165,area:3,unit:"谓词逻辑表示法",type:"j",q:"在谓词逻辑中，∀x P(x) 表示“所有x都满足P”。",a:true,ex:"全称量词∀表示对论域内所有个体成立。"},
+{id:166,area:3,unit:"谓词逻辑表示法",type:"s",q:"逻辑连接词∧表示_______。",opts:["合取（且）","析取（或）","否定","蕴含"],a:[0],ex:"∧为合取(AND)，∨为析取(OR)，¬为否定，→为蕴含。"},
+{id:167,area:3,unit:"谓词逻辑表示法",type:"s",q:"逻辑连接词∨表示_______。",opts:["析取（或）","合取（且）","蕴含","等价"],a:[0],ex:"∨为析取，表示“至少有一个为真”。"},
+{id:168,area:3,unit:"谓词逻辑表示法",type:"s",q:"“人都是要死的；苏格拉底是人；所以苏格拉底要死”运用的推理形式是_______。",opts:["三段论/假言推理","归纳推理","类比推理","回溯推理"],a:[0],ex:"这是经典三段论，由一般原理(∀x Person(x)→Mortal(x))和具体事实(Person(苏))推出结论。"},
+{id:169,area:3,unit:"推理规则",type:"s",q:"假言推理（Modus Ponens）的形式是：若 P→Q 且 P 为真，则_______。",opts:["Q为真","¬Q为真","P为假","不确定"],a:[0],ex:"假言推理：P→Q与P推出Q，是最基本的推理规则。"},
+{id:170,area:3,unit:"推理规则",type:"s",q:"“若天下雨则地湿；地湿；所以可能下过雨”属于_______推理。",opts:["溯因（abductive）推理","演绎推理","归纳推理","完全归纳"],a:[0],ex:"由结果反推可能原因称为溯因推理，结论不一定必然成立。"},
+{id:171,area:3,unit:"推理规则",type:"m",q:"下列属于形式逻辑常用推理规则的有_______。",opts:["假言推理(Modus Ponens)","拒取式(Modus Tollens)","三段论","全称例化"],a:[0,1,2,3],ex:"假言推理、拒取式、三段论、量词例化等都是常见推理规则。"},
+{id:172,area:3,unit:"推理规则",type:"j",q:"归结原理（Resolution）是自动定理证明中重要的推理方法。",a:true,ex:"归结法通过把公式转成子句集并反复消解来证明结论，是自动推理的核心。"},
+{id:173,area:3,unit:"确定性与不确定性推理",type:"s",q:"确定性推理（如经典逻辑推理）的特点是基于_______得出结论。",opts:["精确的真/假与必然推导","概率与模糊","主观判断","随机猜测"],a:[0],ex:"确定性推理依赖精确逻辑，前提真则结论必然真。"},
+{id:174,area:3,unit:"确定性与不确定性推理",type:"s",q:"处理现实问题中知识不完全、证据不确定的情况，应采用_______。",opts:["不确定性推理（贝叶斯/可信度/模糊等）","纯布尔逻辑","只用一个事实","放弃推理"],a:[0],ex:"不确定性推理通过概率、可信度、模糊隶属度等方法量化不确定性。"},
+{id:175,area:3,unit:"确定性与不确定性推理",type:"s",q:"贝叶斯推理的核心是根据_______更新对事件发生可能性的判断。",opts:["先验概率与新的证据","随机数","固定规则","人工经验猜测"],a:[0],ex:"贝叶斯公式用先验P(A)与似然P(B|A)结合证据B更新后验P(A|B)。"},
+{id:176,area:3,unit:"确定性与不确定性推理",type:"m",q:"下列属于不确定性推理方法的有_______。",opts:["贝叶斯推理","可信度方法","模糊推理","确定性逻辑"],a:[0,1,2],ex:"贝叶斯、可信度(CF)、模糊推理均处理不确定性；确定性逻辑不处理不确定性。"},
+{id:177,area:3,unit:"确定性与不确定性推理",type:"j",q:"不确定性推理允许结论带有概率或置信度，而非绝对的“真/假”。",a:true,ex:"不确定性推理输出概率或可信度，反映结论的可靠程度。"},
+{id:178,area:3,unit:"专家系统基本原理",type:"s",q:"专家系统主要由知识库、推理机以及_______等组成。",opts:["人机接口与解释机构","显卡驱动","编译器","操作系统"],a:[0],ex:"专家系统通常含知识库、推理机、综合数据库、解释机构与人机接口。"},
+{id:179,area:3,unit:"专家系统基本原理",type:"s",q:"专家系统的知识库主要存放_______。",opts:["领域专家的知识与规则","用户密码","图片文件","系统日志"],a:[0],ex:"知识库存放领域规则、事实等专家知识，是专家系统的核心。"},
+{id:180,area:3,unit:"专家系统基本原理",type:"m",q:"专家系统通常包含的组成部分有_______。",opts:["知识库","推理机","解释机构","人机接口"],a:[0,1,2,3],ex:"知识库+推理机+综合数据库+解释机构+人机接口构成完整专家系统。"},
+{id:181,area:3,unit:"专家系统基本原理",type:"s",q:"专家系统主要擅长处理_______。",opts:["特定领域内的知识密集型问题","所有通用问题","图像生成","海量数值计算"],a:[0],ex:"专家系统把专家知识固化，适合特定领域的推理与决策，泛化到其他领域能力弱。"},
+{id:182,area:3,unit:"专家系统基本原理",type:"j",q:"专家系统是符号主义人工智能的代表性应用。",a:true,ex:"专家系统用“规则+推理”的符号方式表达知识，属符号主义。"},
+{id:183,area:3,unit:"知识图谱基本原理",type:"s",q:"知识图谱的基本表示单位是_______。",opts:["三元组（实体-关系-实体）","键值对","字节","像素"],a:[0],ex:"知识图谱以(头实体, 关系, 尾实体)三元组表示知识，如(上海, 是, 直辖市)。"},
+{id:184,area:3,unit:"知识图谱基本原理",type:"s",q:"在知识图谱中，节点一般表示_______。",opts:["实体（如人、地名、概念）","关系","路径","权重"],a:[0],ex:"图中节点是实体/概念，边是实体间的关系。"},
+{id:185,area:3,unit:"知识图谱基本原理",type:"s",q:"在知识图谱中，边一般表示_______。",opts:["实体之间的关系","实体本身","属性值","存储地址"],a:[0],ex:"边(有向)表示两个实体间的关系，如“任职于”。"},
+{id:186,area:3,unit:"知识图谱基本原理",type:"j",q:"知识图谱可以支撑智能问答、推荐和推理等应用。",a:true,ex:"知识图谱结构化表达知识，可用于问答、推荐、反欺诈、搜索等。"},
+{id:187,area:3,unit:"知识图谱基本原理",type:"s",q:"从文本中抽取“实体-关系-实体”三元组的过程是知识图谱构建中的_______。",opts:["知识抽取","数据清洗","模型压缩","特征降维"],a:[0],ex:"知识抽取包括实体识别、关系抽取、属性抽取，是图谱构建关键步骤。"},
+{id:188,area:3,unit:"知识图谱基本原理",type:"m",q:"下列属于知识图谱构建关键技术的有_______。",opts:["命名实体识别(NER)","关系抽取","知识融合与对齐","图存储与查询"],a:[0,1,2,3],ex:"知识抽取、融合、存储、查询等构成图谱构建的技术链。"},
+{id:189,area:3,unit:"知识图谱基本原理",type:"s",q:"RDF（资源描述框架）中用三元组描述资源，其三个要素是_______。",opts:["主体-谓词-客体","节点-边-权重","文件名-路径-权限","输入-处理-输出"],a:[0],ex:"RDF三元组为(Subject, Predicate, Object)，即主体-谓词-客体。"},
+{id:190,area:3,unit:"知识图谱基本原理",type:"s",q:"常用于存储知识图谱图结构数据的数据库类型是_______。",opts:["图数据库（如Neo4j）","关系数据库","键值数据库","文档数据库"],a:[0],ex:"图数据库天然适合存储实体与关系的图结构，如Neo4j。"},
+{id:191,area:3,unit:"知识图谱基本原理",type:"s",q:"搜索引擎利用知识图谱构建信息卡片，属于知识图谱在_______方面的应用。",opts:["智能搜索与问答","打印排版","文件压缩","网络加速"],a:[0],ex:"知识图谱结构化知识可增强搜索结果的实体卡片与问答能力。"},
+{id:192,area:3,unit:"本体知识表示",type:"s",q:"本体（Ontology）是对某一领域概念的_______。",opts:["形式化、共享化的明确规范描述","随意命名","硬件设计","网络协议"],a:[0],ex:"本体提供领域概念、属性、关系的形式化共享规范，便于知识交换与推理。"},
+{id:193,area:3,unit:"本体知识表示",type:"s",q:"本体建模通常包含的三类核心要素是_______。",opts:["类(概念)、属性、关系","字节、比特、字","上、下、左","输入、输出、中断"],a:[0],ex:"本体通常定义类(Class)、属性(Property)、关系(Relation)及约束。"},
+{id:194,area:3,unit:"本体知识表示",type:"m",q:"下列属于知识表示方法的有_______。",opts:["谓词逻辑","语义网络","框架表示","产生式规则"],a:[0,1,2,3],ex:"谓词逻辑、语义网络、框架、产生式规则都是经典知识表示方法。"},
+{id:195,area:3,unit:"本体知识表示",type:"s",q:"语义网络是一种用_______表示知识的图结构。",opts:["节点与带标号的边","数组与下标","字符串匹配","音视频流"],a:[0],ex:"语义网络用节点表示概念，边表示关系，形成有向图。"},
+{id:196,area:3,unit:"本体知识表示",type:"s",q:"“产生式规则”的形式一般是_______。",opts:["IF 条件 THEN 动作/结论","WHILE 循环","CASE 分支","SELECT 查询"],a:[0],ex:"产生式规则(IF-THEN)用于表示知识，是专家系统常用表示。"},
+{id:197,area:3,unit:"本体知识表示",type:"j",q:"本体能够为不同系统之间共享和复用领域知识提供统一规范。",a:true,ex:"本体强调共享性与形式化，便于知识在不同系统间一致表达与复用。"},
+{id:198,area:3,unit:"推理规则",type:"s",q:"从“所有A都是B”和“所有B都是C”推出“所有A都是C”，体现的推理规则是_______。",opts:["传递性推理","同一律","矛盾律","排中律"],a:[0],ex:"关系具有传递性，故可由A⊆B且B⊆C推出A⊆C。"},
+{id:199,area:3,unit:"专家系统基本原理",type:"s",q:"专家系统推理机的主要职责是_______。",opts:["根据知识库中知识进行推理得出结论","存储用户密码","渲染界面","管理网络"],a:[0],ex:"推理机按控制策略（正向/反向/混合）使用知识库知识推导结论。"},
+{id:200,area:3,unit:"知识图谱基本原理",type:"s",q:"知识图谱与普通关系数据库表最主要的区别是_______。",opts:["以图结构表达语义与关联，支持关联推理","不能存储数据","只有两层","只能存图片"],a:[0],ex:"知识图谱以图模型表达实体间语义关联，相比关系表更利于关联查询与推理。"},
+/* ================= 5. 机器学习 ================= */
+{id:201,area:4,unit:"机器学习基本概念",type:"s",q:"下列属于有监督学习任务的是_______。",opts:["分类与回归","聚类","降维","关联规则挖掘"],a:[0],ex:"有监督学习使用带标签数据，任务包括分类(离散标签)与回归(连续值)。"},
+{id:202,area:4,unit:"机器学习基本概念",type:"s",q:"K-Means聚类属于_______学习。",opts:["无监督学习","有监督学习","强化学习","半监督学习"],a:[0],ex:"聚类在无标签数据上发现分组结构，属无监督学习。"},
+{id:203,area:4,unit:"机器学习基本概念",type:"s",q:"预测房价（连续数值）属于机器学习中的_______任务。",opts:["回归","分类","聚类","降维"],a:[0],ex:"回归预测连续值(如房价、温度)，分类预测离散类别。"},
+{id:204,area:4,unit:"机器学习基本概念",type:"j",q:"PCA（主成分分析）是一种无监督的特征降维方法。",a:true,ex:"PCA无需标签，通过线性变换把高维数据映射到低维，属无监督降维。"},
+{id:205,area:4,unit:"机器学习基本概念",type:"s",q:"数据预处理中，将特征缩放到[0,1]区间的方法称为_______。",opts:["归一化(Min-Max)","标准化(Standardization)","独热编码","分箱"],a:[0],ex:"Min-Max归一化把数据线性缩放到[0,1]；标准化转为均0方差1。"},
+{id:206,area:4,unit:"机器学习基本概念",type:"s",q:"将类别型特征（如“红/绿/蓝”）转为0/1向量通常用_______。",opts:["独热编码(One-hot)","归一化","正则化","卷积"],a:[0],ex:"独热编码把类别转为one-hot向量，便于模型使用。"},
+{id:207,area:4,unit:"机器学习基本概念",type:"m",q:"常见的特征工程手段包括_______。",opts:["特征缩放","特征选择","特征构造","独热编码"],a:[0,1,2,3],ex:"特征缩放、选择、构造、编码等都是特征工程常用手段。"},
+{id:208,area:4,unit:"机器学习基本概念",type:"s",q:"模型训练时，衡量分类器预测效果最直接的指标是_______。",opts:["准确率(Accuracy)","参数量","网络层数","训练时长"],a:[0],ex:"准确率=预测正确数/总数，是最直观的分类评估指标。"},
+{id:209,area:4,unit:"机器学习基本概念",type:"s",q:"对不均衡分类问题，单看准确率可能失真，常结合使用的指标是_______。",opts:["精确率、召回率与F1","训练时间","内存大小","epoch数"],a:[0],ex:"不均衡数据下常用精确率(Precision)、召回率(Recall)、F1及AUC评估。"},
+{id:210,area:4,unit:"机器学习基本概念",type:"s",q:"混淆矩阵中，TP表示_______。",opts:["真正例（实际正且预测正）","假正例","真负例","假负例"],a:[0],ex:"TP=实际为正且预测为正；FP=实际为负但预测为正；FN=实际为正但预测为负。"},
+{id:211,area:4,unit:"机器学习基本概念",type:"j",q:"召回率(Recall)表示正类样本中被正确预测为正的比例。",a:true,ex:"召回率=TP/(TP+FN)，衡量对正类的覆盖程度。"},
+{id:212,area:4,unit:"机器学习基本概念",type:"s",q:"模型在训练集上表现好但测试集表现差，称为_______。",opts:["过拟合","欠拟合","梯度消失","数据泄露"],a:[0],ex:"过拟合指模型过度学习训练集噪声，泛化能力差。"},
+{id:213,area:4,unit:"机器学习基本概念",type:"s",q:"模型连训练数据都无法很好拟合，称为_______。",opts:["欠拟合","过拟合","正则化","归一化"],a:[0],ex:"欠拟合表示模型能力不足或特征不够，训练误差大。"},
+{id:214,area:4,unit:"机器学习经典方法",type:"s",q:"线性回归的目标是拟合一条直线/超平面，使_______最小。",opts:["预测值与真实值的误差(如MSE)","准确率","参数量","运行内存"],a:[0],ex:"线性回归用最小二乘法最小化均方误差(MSE)。"},
+{id:215,area:4,unit:"机器学习经典方法",type:"s",q:"逻辑回归主要用于解决_______问题。",opts:["二分类","聚类","降维","生成"],a:[0],ex:"逻辑回归通过Sigmoid函数输出概率，用于二分类。"},
+{id:216,area:4,unit:"机器学习经典方法",type:"s",q:"决策树通过不断_______来划分数据。",opts:["按特征与阈值分裂","随机打乱","连接网络","矩阵求逆"],a:[0],ex:"决策树根据特征取值递归划分样本，常用信息增益/基尼系数选特征。"},
+{id:217,area:4,unit:"机器学习经典方法",type:"s",q:"K近邻（KNN）分类的核心思想是_______。",opts:["根据最近K个样本的多数类别来预测","线性可分求权重","构建决策树","梯度下降"],a:[0],ex:"KNN按距离找到K个最近邻，多数投票确定类别。"},
+{id:218,area:4,unit:"机器学习经典方法",type:"s",q:"支持向量机（SVM）的核心思想是_______。",opts:["寻找最大间隔分离超平面","随机森林投票","逐层反向传播","马尔可夫链"],a:[0],ex:"SVM寻找使两类间隔最大化的超平面，并用核技巧处理非线性。"},
+{id:219,area:4,unit:"机器学习经典方法",type:"s",q:"K-Means算法把样本划分为K个簇，属于_______。",opts:["聚类","回归","分类","序列预测"],a:[0],ex:"K-Means迭代更新簇中心实现聚类，属无监督。"},
+{id:220,area:4,unit:"机器学习经典方法",type:"s",q:"随机森林（Random Forest）属于_______模型。",opts:["集成学习(Ensemble)","单一线性模型","朴素贝叶斯","KNN"],a:[0],ex:"随机森林是Bagging集成，组合多棵决策树投票，降低方差。"},
+{id:221,area:4,unit:"机器学习经典方法",type:"m",q:"下列属于集成学习方法的有_______。",opts:["Bagging","Boosting(如AdaBoost、XGBoost)","随机森林","Stacking"],a:[0,1,2,3],ex:"Bagging、Boosting、随机森林、Stacking等都是集成学习方法。"},
+{id:222,area:4,unit:"机器学习经典方法",type:"s",q:"PCA（主成分分析）的主要作用是_______。",opts:["降维，保留主要信息减少特征数","增大数据量","添加标签","加快磁盘"],a:[0],ex:"PCA通过正交变换提取主成分降维，常用于数据压缩与可视化。"},
+{id:223,area:4,unit:"机器学习经典方法",type:"s",q:"LDA（线性判别分析）在分类中除了降维，还兼顾_______。",opts:["最大化类间离散、最小化类内离散","随机分组","去除标签","增加噪声"],a:[0],ex:"LDA是有监督降维，同时最大化类间散度、最小化类内散度以利于分类。"},
+{id:224,area:4,unit:"机器学习经典方法",type:"s",q:"朴素贝叶斯分类器基于的核心假设是_______。",opts:["特征之间相互独立","特征相互依赖","所有样本相同","标签连续"],a:[0],ex:"朴素贝叶斯假设各特征条件独立，据此用贝叶斯公式计算后验概率。"},
+{id:225,area:4,unit:"机器学习经典方法",type:"j",q:"Boosting通过串行训练多个弱学习器并加权组合来提升效果。",a:true,ex:"Boosting(如AdaBoost、GBDT)串行修正前一轮误差，组合成强学习器。"},
+{id:226,area:4,unit:"机器学习基本概念",type:"s",q:"将原始数据划分为训练集、验证集、测试集的目的是_______。",opts:["训练、调参、最终评估三者互不干扰","三个集合都用同一份数据","只留测试集","增加存储"],a:[0],ex:"训练集拟合、验证集调参、测试集最终评估，避免信息泄露。"},
+{id:227,area:4,unit:"机器学习经典方法",type:"s",q:"层次聚类（Hierarchical Clustering）的输出特点是_______。",opts:["可生成树状图(树状聚类)","只能分两类","必须降维","只能处理图像"],a:[0],ex:"层次聚类自底向上合并或自顶向下分裂，可生成层次树状结构。"},
+{id:228,area:4,unit:"强化学习基本概念",type:"s",q:"强化学习中，智能体通过_______来学习最优策略。",opts:["与环境交互获得奖励信号","带标签数据批量训练","静态规则表","人工标注所有状态"],a:[0],ex:"强化学习核心是智能体与环境交互，依据奖励信号学习最优策略。"},
+{id:229,area:4,unit:"强化学习基本概念",type:"s",q:"强化学习中的“策略”指的是_______。",opts:["状态到动作的映射（智能体如何行动）","损失函数","数据增强","超参数列表"],a:[0],ex:"策略π描述在给定状态下选择何种动作的规则。"},
+{id:230,area:4,unit:"强化学习基本概念",type:"j",q:"强化学习需要大量带有正确标签的训练样本。",a:false,ex:"强化学习无需预先标注的正确答案，而是通过试错和奖励信号学习，说法错误。"},
+{id:231,area:4,unit:"强化学习基本概念",type:"s",q:"在强化学习中，“回报/奖励(Reward)”的作用是_______。",opts:["指导智能体判断动作好坏","增大网络层数","存储数据","打印日志"],a:[0],ex:"奖励信号衡量动作的好坏，智能体以最大化累积回报为目标。"},
+{id:232,area:4,unit:"强化学习基本概念",type:"s",q:"Q-learning属于强化学习中的_______方法。",opts:["基于价值(Value-based)","基于策略梯度","基于分类","基于聚类"],a:[0],ex:"Q-learning学习状态-动作价值函数Q(s,a)，属于基于价值的强化学习方法。"},
+{id:233,area:4,unit:"强化学习基本概念",type:"s",q:"“价值函数”用于衡量_______。",opts:["某状态或状态动作对带来的长期累积回报","模型参数量","数据量","运行速度"],a:[0],ex:"价值函数V(s)或Q(s,a)估计从某状态/采取某动作的长期期望回报。"},
+{id:234,area:4,unit:"强化学习基本概念",type:"m",q:"强化学习的核心要素包括_______。",opts:["智能体(Agent)","环境(Environment)","动作(Action)与状态(State)","奖励(Reward)"],a:[0,1,2,3],ex:"强化学习四要素：智能体、环境、状态/动作、奖励。"},
+{id:235,area:4,unit:"机器学习经典方法",type:"s",q:"岭回归(L2)与LASSO(L1)等通过在损失中加入______项来防止过拟合。",opts:["正则化(惩罚)","归一化","独热编码","卷积"],a:[0],ex:"L1/L2正则项惩罚过大权重，降低模型复杂度防止过拟合。"},
+{id:236,area:4,unit:"机器学习基本概念",type:"s",q:"“交叉验证”的主要作用是_______。",opts:["更可靠地评估模型泛化能力","增大参数量","提高运行速度","美化图表"],a:[0],ex:"交叉验证把数据切分成多折轮流验证，减少评估方差，结果更可靠。"},
+{id:237,area:4,unit:"机器学习经典方法",type:"s",q:"梯度提升树(GBDT)属于_______集成方法。",opts:["Boosting","Bagging","KNN","PCA"],a:[0],ex:"GBDT、XGBoost是Boosting家族，串行拟合残差提升精度。"},
+{id:238,area:4,unit:"机器学习经典方法",type:"s",q:"AUC（ROC曲线下面积）越接近1，表示分类模型_______。",opts:["区分正负类的能力越强","参数量越大","训练越慢","越容易过拟合"],a:[0],ex:"AUC衡量模型把正样本排在负样本前面的能力，越接近1分类能力越强。"},
+{id:239,area:4,unit:"机器学习基本概念",type:"j",q:"特征工程是提升机器学习模型性能的重要手段之一。",a:true,ex:"好的特征往往比复杂模型更有效，特征工程对性能影响显著。"},
+{id:240,area:4,unit:"强化学习基本概念",type:"s",q:"AlphaGo利用深度神经网络评估棋局并结合______进行决策。",opts:["蒙特卡洛树搜索(MCTS)与强化学习","线性回归","K-Means","PCA"],a:[0],ex:"AlphaGo结合深度网络与MCTS、强化学习实现围棋决策。"},
+
+/* ================= 6. 深度学习 ================= */
+{id:241,area:5,unit:"神经网络基本概念",type:"s",q:"前向传播是指_______。",opts:["从输入层到输出层逐层计算网络输出","从输出到输入算梯度","随机初始化","只更新最后一层"],a:[0],ex:"前向传播沿网络从输入逐层计算得到输出；反向传播则从输出向前计算梯度。"},
+{id:242,area:5,unit:"神经网络基本概念",type:"s",q:"反向传播（Backpropagation）主要用于计算_______。",opts:["损失函数对各参数的梯度","模型输出的精度","数据的均值","激活函数值"],a:[0],ex:"反向传播利用链式法则从输出层向前逐层计算梯度，用于更新参数。"},
+{id:243,area:5,unit:"神经网络基本概念",type:"j",q:"反向传播算法依赖微积分中的链式法则。",a:true,ex:"BP通过链式法则复合求导逐层回传梯度，说法正确。"},
+{id:244,area:5,unit:"神经网络基本概念",type:"s",q:"激活函数在神经网络中的主要作用是_______。",opts:["引入非线性，使网络能拟合复杂函数","降低维度","减少参数量","压缩图像"],a:[0],ex:"若无非线性激活，多层线性叠加仍是线性变换，无法表达复杂函数。"},
+{id:245,area:5,unit:"神经网络基本概念",type:"s",q:"ReLU激活函数的数学形式是_______。",opts:["max(0,x)","1/(1+e^-x)","tanh(x)","|x|"],a:[0],ex:"ReLU=max(0,x)，计算简单、缓解梯度消失，是目前最常用激活函数。"},
+{id:246,area:5,unit:"神经网络基本概念",type:"s",q:"Sigmoid函数的输出范围是_______。",opts:["(0,1)","(-1,1)","(-∞,∞)","(0,∞)"],a:[0],ex:"Sigmoid输出在(0,1)之间，适合二分类输出概率，但存在梯度饱和问题。"},
+{id:247,area:5,unit:"神经网络基本概念",type:"m",q:"下列属于常用激活函数的有_______。",opts:["ReLU","Sigmoid","Tanh","Softmax"],a:[0,1,2,3],ex:"ReLU、Sigmoid、Tanh、Softmax都是常用激活函数(Softmax用于多分类概率)。"},
+{id:248,area:5,unit:"神经网络基本概念",type:"s",q:"多分类任务中，输出层常使用_______激活函数得到各类别概率。",opts:["Softmax","ReLU","LeakyReLU","Sigmoid单变量"],a:[0],ex:"Softmax把输出向量归一化为概率分布，各分量和为1。"},
+{id:249,area:5,unit:"神经网络基本概念",type:"s",q:"分类任务中最常用的损失函数是_______。",opts:["交叉熵(Cross-Entropy)","均方误差MSE","平均绝对误差MAE","Huber"],a:[0],ex:"交叉熵适合分类，度量预测概率分布与真实分布的差异；MSE常用于回归。"},
+{id:250,area:5,unit:"神经网络基本概念",type:"s",q:"回归任务中常用的损失函数是_______。",opts:["均方误差(MSE)","交叉熵","Softmax","Sigmoid"],a:[0],ex:"MSE衡量预测连续值与真实值的平方误差，常用于回归。"},
+{id:251,area:5,unit:"神经网络基本概念",type:"s",q:"梯度下降法更新参数的方向是_______。",opts:["沿损失函数的负梯度方向","沿正梯度方向","随机方向","沿对角线方向"],a:[0],ex:"沿负梯度方向使损失下降最快，迭代逼近极小值。"},
+{id:252,area:5,unit:"神经网络基本概念",type:"s",q:"学习率过大时，梯度下降可能出现_______。",opts:["参数震荡甚至发散","收敛更快且更稳","必然收敛","参数为零"],a:[0],ex:"学习率过大导致步长过大、震荡发散；过小则收敛缓慢。"},
+{id:253,area:5,unit:"神经网络基本概念",type:"s",q:"模型在训练集表现好、测试集表现差，最可能是_______。",opts:["过拟合","欠拟合","梯度消失","数据太少无法判断"],a:[0],ex:"过拟合是泛化能力不足的典型表现，需正则化、数据增强等缓解。"},
+{id:254,area:5,unit:"神经网络基本概念",type:"s",q:"训练集和测试集误差都很大，说明模型可能_______。",opts:["欠拟合","过拟合","完美拟合","无需改进"],a:[0],ex:"两者都差说明模型能力不足，为欠拟合，需增加容量或特征。"},
+{id:255,area:5,unit:"神经网络基本概念",type:"s",q:"Dropout正则化在训练时的主要做法是_______。",opts:["随机丢弃一部分神经元(置零)","把所有权重设为零","增加层数","放大所有输入"],a:[0],ex:"Dropout训练时随机屏蔽部分神经元，减少对特定节点的依赖，缓解过拟合。"},
+{id:256,area:5,unit:"神经网络基本概念",type:"s",q:"在损失函数中加入权重的L2范数作为惩罚，属于_______正则化。",opts:["L2(岭)正则化","数据增强","批量归一化","dropout"],a:[0],ex:"L1/L2正则化对过大权重施加惩罚，抑制过拟合。"},
+{id:257,area:5,unit:"神经网络基本概念",type:"m",q:"下列属于缓解过拟合的常用方法有_______。",opts:["正则化(L1/L2)","Dropout","数据增强","早停(Early Stopping)"],a:[0,1,2,3],ex:"正则化、Dropout、数据增强、早停、减小模型容量等都能缓解过拟合。"},
+{id:258,area:5,unit:"神经网络基本概念",type:"j",q:"数据增强（如随机翻转、裁剪）可以在不增加新数据的情况下提升模型泛化能力。",a:true,ex:"数据增强通过对原数据做变换扩充样本多样性，降低过拟合风险。"},
+{id:259,area:5,unit:"典型神经网络",type:"s",q:"Sequential（序贯）模型的特点是_______。",opts:["层按顺序依次堆叠，一个输入一个输出","任意分支跳连","循环结构","图结构"],a:[0],ex:"Sequential逐层线性堆叠，适合简单前馈网络，是Keras/PyTorch常见结构。"},
+{id:260,area:5,unit:"典型神经网络",type:"s",q:"卷积神经网络（CNN）的核心操作是_______。",opts:["卷积与池化","序列递归","注意力打分","特征选择"],a:[0],ex:"CNN通过卷积核提取局部特征并用池化降维，适合图像等网格结构数据。"},
+{id:261,area:5,unit:"典型神经网络",type:"s",q:"卷积层通过_______实现局部特征提取和参数共享。",opts:["滑动窗口卷积核","全连接","递归更新","随机采样"],a:[0],ex:"卷积核在输入上滑动做卷积，提取局部特征并共享权重，大幅减少参数。"},
+{id:262,area:5,unit:"典型神经网络",type:"s",q:"池化层（Pooling）的主要作用是_______。",opts:["降低特征图空间维度","增加通道数","引入非线性","防止梯度消失"],a:[0],ex:"池化(如最大池化)下采样降低空间尺寸，增大感受野并减少计算量。"},
+{id:263,area:5,unit:"典型神经网络",type:"j",q:"在卷积神经网络中，池化层可以降低特征图的空间维度。",a:true,ex:"池化下采样减小特征图宽高，说法正确(与模拟卷单选15一致)。"},
+{id:264,area:5,unit:"典型神经网络",type:"s",q:"LeNet是_______的经典早期模型。",opts:["CNN手写数字识别","RNN","Transformer","GAN"],a:[0],ex:"LeNet是LeCun提出的经典CNN，用于手写数字识别(MNIST)。"},
+{id:265,area:5,unit:"典型神经网络",type:"s",q:"ResNet通过引入_______解决了深层网络难以训练/退化的问题。",opts:["残差连接(跳跃连接)","更大的学习率","更少的层","全连接"],a:[0],ex:"ResNet用恒等跳跃连接构成残差块，使梯度更好传播，可训练很深网络。"},
+{id:266,area:5,unit:"典型神经网络",type:"j",q:"ResNet的残差连接（shortcut）有利于深层网络的训练。",a:true,ex:"残差连接缓解梯度消失与退化问题，使百层以上网络可训练，说法正确。"},
+{id:267,area:5,unit:"典型神经网络",type:"s",q:"循环神经网络（RNN）特别适合处理_______数据。",opts:["序列（如时间序列、文本）","单张图片","静态表格","配置文件"],a:[0],ex:"RNN通过隐藏状态沿时间传递信息，天然适合文本、语音、时序等序列数据。"},
+{id:268,area:5,unit:"典型神经网络",type:"s",q:"传统RNN在处理长序列时容易出现_______问题。",opts:["梯度消失/爆炸，难以记忆长期依赖","无法输入文本","参数量为零","无法训练"],a:[0],ex:"RNN反向传播随时间展开易梯度消失/爆炸，难以捕获长距离依赖，故引入LSTM/GRU。"},
+{id:269,area:5,unit:"典型神经网络",type:"s",q:"LSTM通过引入_______来控制信息的记忆与遗忘。",opts:["门控机制(输入门/遗忘门/输出门)","卷积核","注意力矩阵","Dropout"],a:[0],ex:"LSTM用输入门、遗忘门、输出门选择性记忆与遗忘，缓解长程依赖问题。"},
+{id:270,area:5,unit:"典型神经网络",type:"s",q:"GRU与LSTM相比的主要特点是_______。",opts:["结构更简化（门更少），参数更少","完全不支持记忆","只能做卷积","无法训练"],a:[0],ex:"GRU将LSTM的多个门简化为更新门与重置门，参数更少、训练更快。"},
+{id:271,area:5,unit:"典型神经网络",type:"m",q:"下列属于典型CNN模型的包括_______。",opts:["LeNet","AlexNet","ResNet","VGG"],a:[0,1,2,3],ex:"LeNet、AlexNet、VGG、ResNet等都是经典CNN架构。"},
+{id:272,area:5,unit:"典型神经网络",type:"m",q:"下列属于处理序列数据的典型神经网络的有_______。",opts:["RNN","LSTM","GRU","Transformer"],a:[0,1,2,3],ex:"RNN、LSTM、GRU和Transformer都能建模序列，Transformer用注意力机制。"},
+{id:273,area:5,unit:"典型神经网络",type:"s",q:"Transformer的核心机制是_______。",opts:["自注意力(Self-Attention)","卷积滑窗","递归循环","池化采样"],a:[0],ex:"Transformer以多头自注意力为核心，可并行处理序列并捕捉长距离依赖。"},
+{id:274,area:5,unit:"典型神经网络",type:"s",q:"Transformer编码器中“多头注意力”的作用是_______。",opts:["从多个子空间捕捉不同的注意力关系","把参数减半","只关注最后一个词","去掉所有权重"],a:[0],ex:"多头注意力把QKV分到多个头并行计算，捕捉多样化的依赖关系。"},
+{id:275,area:5,unit:"典型神经网络",type:"j",q:"Transformer完全基于注意力机制，不使用循环或卷积结构。",a:true,ex:"Transformer用自注意力+前馈网络+位置编码，无需RNN循环，可并行训练。"},
+{id:276,area:5,unit:"神经网络基本概念",type:"s",q:"“epoch”指的是_______。",opts:["完整遍历训练集一次","一次前向传播","一个样本","一个超参数"],a:[0],ex:"epoch=对整个训练集完整训练一遍；batch=一次迭代处理的样本子集。"},
+{id:277,area:5,unit:"神经网络基本概念",type:"s",q:"批量归一化（BatchNorm）的主要作用是_______。",opts:["稳定中间层输入的分布，加速收敛","增加参数量必然过拟合","消除所有梯度","替代激活函数"],a:[0],ex:"BatchNorm归一化每批激活值，稳定训练、允许更大学习率，加速收敛。"},
+{id:278,area:5,unit:"神经网络基本概念",type:"s",q:"软输出/温度参数等技巧常用于_______训练过程。",opts:["知识蒸馏等","数据标注","网络搭建","磁盘整理"],a:[0],ex:"知识蒸馏利用软标签（温度缩放）把大模型知识迁移给小模型。"},
+{id:279,area:5,unit:"神经网络基本概念",type:"m",q:"下列属于常用损失函数的有_______。",opts:["交叉熵(Cross-Entropy)","均方误差(MSE)","Hinge(合页)损失","感知损失"],a:[0,1,2,3],ex:"交叉熵、MSE、Hinge、感知损失等用于不同任务。"},
+{id:280,area:5,unit:"神经网络基本概念",type:"s",q:"训练开始前随机设置网络权重，称为_______。",opts:["权重初始化","前向传播","损失计算","早停"],a:[0],ex:"合理的权重初始化(如Xavier/He)影响收敛速度与效果。"},
+{id:281,area:5,unit:"神经网络基本概念",type:"s",q:"迁移学习（使用预训练模型微调）的主要好处是_______。",opts:["利用已学特征，小数据也能训出较好模型","必须从零训练","不能复用任何参数","只适用于图片"],a:[0],ex:"迁移学习加载预训练权重再微调，可在数据有限时获得好效果。"},
+{id:282,area:5,unit:"典型神经网络",type:"s",q:"将模型输出概率最高的类别作为预测结果，常见于_______。",opts:["分类决策(取argmax)","回归取均值","聚类取质心","降维投影"],a:[0],ex:"分类中通常取softmax概率最大(最大后验)的类别作为预测。"},
+/* ================= 7. 计算机视觉 ================= */
+{id:283,area:6,unit:"特征表示与滤波",type:"s",q:"图像滤波（如均值/高斯滤波）的主要作用是_______。",opts:["平滑降噪","增大分辨率","增加颜色","删除通道"],a:[0],ex:"滤波通过邻域加权平均平滑图像、去除噪声，如高斯滤波。"},
+{id:284,area:6,unit:"特征表示与滤波",type:"s",q:"高斯滤波常用于抑制图像中的_______。",opts:["高斯噪声/高频噪声","图像本身结构","所有像素","颜色亮度"],a:[0],ex:"高斯滤波是低通滤波，可平滑细节、抑制噪声。"},
+{id:285,area:6,unit:"边缘检测",type:"s",q:"Sobel、Canny等算子用于图像的_______。",opts:["边缘检测","色彩增强","图像压缩","格式转换"],a:[0],ex:"Sobel、Canny通过梯度计算检测图像边缘。"},
+{id:286,area:6,unit:"边缘检测",type:"j",q:"Canny边缘检测算子通过计算图像梯度并施加阈值来定位边缘。",a:true,ex:"Canny包含高斯平滑、梯度计算、非极大值抑制、双阈值处理，可得到清晰边缘。"},
+{id:287,area:6,unit:"图像分割与分类",type:"s",q:"将图像中每个像素分类到对应类别（如道路/天空/行人）属于_______。",opts:["语义分割","目标检测","图像分类","风格迁移"],a:[0],ex:"语义分割逐像素标注类别；图像分类整图给一个标签；目标检测输出框。"},
+{id:288,area:6,unit:"图像分割与分类",type:"s",q:"给一张图片判断“是猫还是狗”属于计算机视觉的_______任务。",opts:["图像分类","目标检测","实例分割","三维重建"],a:[0],ex:"图像分类对整幅图给出类别标签。"},
+{id:289,area:6,unit:"目标检测与识别",type:"s",q:"目标检测任务不仅要知道图像中有哪些对象，还要_______。",opts:["用边界框定位对象位置","给每个像素分类","重建三维形状","生成新图像"],a:[0],ex:"目标检测输出“类别+边界框”，兼顾识别与定位。"},
+{id:290,area:6,unit:"目标检测与识别",type:"s",q:"YOLO等模型的典型特点是_______。",opts:["单阶段实时目标检测，速度快","只能分类整图","无边界框","只能处理语音"],a:[0],ex:"YOLO单阶段直接回归框与类别，速度快，适合实时检测。"},
+{id:291,area:6,unit:"图像分割与分类",type:"m",q:"下列属于计算机视觉主要任务的有_______。",opts:["图像分类","目标检测","图像分割","图像生成"],a:[0,1,2,3],ex:"分类、检测、分割、生成、识别等都是CV任务。"},
+{id:292,area:6,unit:"目标检测与识别",type:"s",q:"人脸识别的基本流程一般包括_______。",opts:["人脸检测→对齐→特征提取→比对","随机生成","直接压缩","只检测不比对"],a:[0],ex:"人脸识别先检测并对齐人脸，再提取特征向量进行比对。"},
+{id:293,area:6,unit:"生物特征识别",type:"s",q:"下列不属于生物特征识别的是_______。",opts:["键盘输入密码","人脸识别","指纹识别","虹膜识别"],a:[0],ex:"生物特征识别基于生理/行为特征(人脸、指纹、虹膜、声纹)；密码不是生物特征。"},
+{id:294,area:6,unit:"生物特征识别",type:"m",q:"常见的生物特征识别方式包括_______。",opts:["人脸识别","指纹识别","虹膜识别","声纹识别"],a:[0,1,2,3],ex:"人脸、指纹、虹膜、声纹等均为生物特征识别方式。"},
+{id:295,area:6,unit:"行为分析",type:"s",q:"监控视频中识别“跌倒”“奔跑”等动作，属于计算机视觉的_______任务。",opts:["行为分析","图像压缩","色彩校正","格式转换"],a:[0],ex:"行为分析从视频中识别人的动作与行为，常用于安防与康复监测。"},
+{id:296,area:6,unit:"三维重建",type:"s",q:"利用多视角照片或深度传感器恢复场景的三维结构，属于_______。",opts:["三维重建/立体视觉","图像分类","边缘检测","风格迁移"],a:[0],ex:"三维重建融合多视图/深度信息重建物体或场景的三维几何。"},
+{id:297,area:6,unit:"三维重建",type:"j",q:"立体视觉通过左右两幅图像的视差来估计深度。",a:true,ex:"立体视觉利用双目视差三角测量计算深度，属三维重建基础。"},
+{id:298,area:6,unit:"图像生成与风格迁移",type:"s",q:"用GAN或扩散模型生成新的逼真图像，属于计算机视觉中的_______。",opts:["图像生成","目标检测","边缘检测","图像压缩"],a:[0],ex:"图像生成(生成式视觉)用GAN/扩散模型等生成新图像。"},
+{id:299,area:6,unit:"图像生成与风格迁移",type:"s",q:"把一张照片变成梵高风格的画作，属于_______。",opts:["风格迁移","目标检测","三维重建","行为分析"],a:[0],ex:"风格迁移把参考图的风格应用到内容图上，生成艺术化图像。"},
+{id:300,area:6,unit:"特征表示与滤波",type:"s",q:"CNN中，低层卷积通常学习到的特征是_______。",opts:["边缘、颜色等低级特征","高级语义(物体)","全局特征","时间特征"],a:[0],ex:"CNN自低到高逐层学习：低层是边缘/纹理，深层是语义对象。"},
+{id:301,area:6,unit:"特征表示与滤波",type:"s",q:"HOG(方向梯度直方图)是一种_______特征描述子。",opts:["局部(梯度方向直方图)特征","全局颜色均值","音频特征","文本特征"],a:[0],ex:"HOG统计局部区域梯度方向直方图，用于行人检测等。"},
+{id:302,area:6,unit:"目标检测与识别",type:"s",q:"OCR（光学字符识别）的主要用途是_______。",opts:["识别图像中的文字","识别声音","重建三维","生成图像"],a:[0],ex:"OCR把图片/文档中的文字识别为可编辑文本。"},
+{id:303,area:6,unit:"图像分割与分类",type:"s",q:"实例分割相比语义分割，进一步区分_______。",opts:["同一类别中的不同个体(实例)","不同颜色","不同分辨率","不同格式"],a:[0],ex:"实例分割在逐像素分类基础上区分同一类别的不同实例。"},
+{id:304,area:6,unit:"行为分析",type:"s",q:"估计视频中人体骨骼关键点（关节位置）属于_______。",opts:["姿态估计(人体关键点检测)","图像压缩","文字识别","色彩调整"],a:[0],ex:"姿态估计定位人体关节，支撑行为识别、人机交互等。"},
+{id:305,area:6,unit:"目标检测与识别",type:"s",q:"自动驾驶中识别道路、车辆、行人主要由目标检测与_______承担。",opts:["语义分割","图像压缩","风格迁移","OCR"],a:[0],ex:"自动驾驶结合目标检测与语义分割理解道路场景。"},
+{id:306,area:6,unit:"图像生成与风格迁移",type:"s",q:"扩散模型（Diffusion）生成图像的思路是_______。",opts:["逐步去噪(从噪声恢复图像)","直接查表","一次性打印","随机截取"],a:[0],ex:"扩散模型先加噪再学习逐步去噪，从而从纯噪声生成图像。"},
+{id:307,area:6,unit:"目标检测与识别",type:"j",q:"Faster R-CNN、YOLO等都是目标检测的经典方法。",a:true,ex:"Faster R-CNN(两阶段)与YOLO(单阶段)都是主流目标检测方法。"},
+{id:308,area:6,unit:"特征表示与滤波",type:"m",q:"下列属于图像预处理/增强操作的有_______。",opts:["高斯滤波","直方图均衡化","随机裁剪翻转","亮度对比度调整"],a:[0,1,2,3],ex:"滤波、直方图均衡、裁剪翻转、亮度调整等都是图像预处理/增强操作。"},
+{id:309,area:6,unit:"图像分割与分类",type:"s",q:"医学影像(如CT)中的病灶区域分割属于_______。",opts:["图像分割","目标检测框选","图像生成","风格迁移"],a:[0],ex:"医学影像分割逐像素标出病灶区域，辅助诊断。"},
+{id:310,area:6,unit:"三维重建",type:"s",q:"点云(Point Cloud)通常由______采集得到。",opts:["激光雷达/深度相机","普通文档","键盘输入","音频录音"],a:[0],ex:"激光雷达、深度相机等产生点云，用于三维重建与自动驾驶。"},
+{id:311,area:6,unit:"目标检测与识别",type:"s",q:"安防系统中用AI识别违规停车、越界等，主要用到_______。",opts:["目标检测与行为分析","图像压缩","风格迁移","格式转换"],a:[0],ex:"安防视频AI结合目标检测与行为分析识别违规事件。"},
+{id:312,area:6,unit:"图像生成与风格迁移",type:"s",q:"“AI看片”即AI对医学影像进行分析诊断，属于计算机视觉的_______应用。",opts:["图像识别与分割辅助诊断","图像打印","网络传输","文字校对"],a:[0],ex:"AI医学影像分析通过识别/分割辅助医生诊断，是CV在医疗的应用。"},
+{id:313,area:6,unit:"图像生成与风格迁移",type:"j",q:"GAN由生成器与判别器两部分组成，二者对抗训练。",a:true,ex:"GAN生成器伪造样本、判别器区分真假，二者博弈提升生成质量。"},
+{id:314,area:6,unit:"特征表示与滤波",type:"s",q:"图像锐化的本质是_______。",opts:["增强边缘与高频细节","完全模糊图像","改变文件大小","转换格式"],a:[0],ex:"锐化通过增强高频成分突出细节与边缘。"},
+{id:315,area:6,unit:"行为分析",type:"s",q:"视频理解与行为识别通常还需要利用帧之间的_______信息。",opts:["时序(运动)","静态颜色","文件属性","音频"],a:[0],ex:"行为分析需结合时间维度(运动/时序)，故常用RNN/3D卷积/视频Transformer。"},
+
+/* ================= 8. 语音处理 ================= */
+{id:316,area:7,unit:"语音处理基础",type:"s",q:"声音的“响度”主要与声波的_______有关。",opts:["振幅(能量)","频率","相位","采样率"],a:[0],ex:"响度对应声波振幅/能量，越大越响；频率决定音高。"},
+{id:317,area:7,unit:"语音处理基础",type:"s",q:"声音的“音高”主要由声波的_______决定。",opts:["基音频率","振幅","波形形状","时长"],a:[0],ex:"音高由基音频率(F0)决定，频率越高音调越高。"},
+{id:318,area:7,unit:"语音处理基础",type:"s",q:"发声时声道的谐振频率峰值称为_______。",opts:["共振峰(Formant)","采样率","量化位数","带宽"],a:[0],ex:"共振峰是声道谐振产生的频谱峰值，与元音音色密切相关。"},
+{id:319,area:7,unit:"语音处理基础",type:"j",q:"听觉掩蔽效应指一个声音可能被同时出现的另一个更强声音掩盖。",a:true,ex:"掩蔽效应是听觉的重要特性，也是音频压缩(如MP3)利用的原理。"},
+{id:320,area:7,unit:"语音处理基础",type:"s",q:"语音数字化时，采样频率需满足奈奎斯特定理，至少为最高频率的_______倍。",opts:["2倍","1倍","4倍","0.5倍"],a:[0],ex:"奈奎斯特定理要求采样率≥信号最高频率的2倍，才能无失真重建。"},
+{id:321,area:7,unit:"声音信号预处理与量化",type:"s",q:"将连续的模拟声音信号转成离散数字信号的过程称为_______。",opts:["采样与量化","滤波增强","分帧加窗","格式转换"],a:[0],ex:"数字化包括采样(时间离散)与量化(幅度离散)两步。"},
+{id:322,area:7,unit:"声音信号预处理与量化",type:"s",q:"语音处理中把长语音切成短片段(如25ms)再进行特征提取，称为_______。",opts:["分帧","量化","插值","加密"],a:[0],ex:"语音是短时平稳的，通常分帧(如25ms帧、10ms移)加窗处理。"},
+{id:323,area:7,unit:"常用时域、频域、声学特征",type:"s",q:"_______是语音处理中非常常用的声学特征。",opts:["梅尔频率倒谱系数(MFCC)","像素值","词向量","句法树"],a:[0],ex:"MFCC是语音识别最经典的声学特征，模拟人耳对频率的非线性感知(与模拟卷第1题一致)。"},
+{id:324,area:7,unit:"常用时域、频域、声学特征",type:"s",q:"通过傅里叶变换把时域信号转为频域表示，得到的是_______。",opts:["频谱/谱特征","MFCC","音高曲线","波形振幅"],a:[0],ex:"傅里叶变换得到频谱，进一步可得到滤波器组特征、MFCC等。"},
+{id:325,area:7,unit:"常用时域、频域、声学特征",type:"m",q:"下列属于语音(声学)常用特征或处理的有_______。",opts:["MFCC","频谱(Fbank)","基音频率","分帧加窗"],a:[0,1,2,3],ex:"MFCC、Fbank、基音频率、分帧加窗等都是语音特征/处理环节。"},
+{id:326,area:7,unit:"语音处理方法与应用",type:"s",q:"把语音转成文字的AI技术称为_______。",opts:["自动语音识别(ASR)","语音合成(TTS)","说话人识别","语音增强"],a:[0],ex:"ASR(语音识别)将语音转为文本；TTS把文本合成为语音。"},
+{id:327,area:7,unit:"语音处理方法与应用",type:"s",q:"把文字转换成自然语音输出的技术称为_______。",opts:["语音合成(TTS)","语音识别(ASR)","关键词识别","声纹认证"],a:[0],ex:"TTS文本到语音合成，用于语音助手、导航播报等。"},
+{id:328,area:7,unit:"语音处理方法与应用",type:"s",q:"“根据声音判断说话人是谁”属于_______。",opts:["说话人识别","语音识别","语音增强","情感识别"],a:[0],ex:"说话人识别依据声纹特征辨别身份，用于认证与区分说话人。"},
+{id:329,area:7,unit:"语音处理方法与应用",type:"s",q:"从嘈杂背景中突出语音、抑制噪声的技术称为_______。",opts:["语音增强(降噪)","语音合成","语音分帧","语音加密"],a:[0],ex:"语音增强在信噪比低时提升语音质量，改善识别效果。"},
+{id:330,area:7,unit:"语音处理方法与应用",type:"m",q:"下列属于语音处理典型任务的有_______。",opts:["语音识别","语音合成","说话人识别","语音增强"],a:[0,1,2,3],ex:"识别、合成、说话人识别、增强等都是语音处理任务。"},
+{id:331,area:7,unit:"语音处理方法与应用",type:"s",q:"DNN-HMM是早期经典的_______模型。",opts:["语音识别声学模型","图像分类","机器翻译","文本生成"],a:[0],ex:"DNN-HMM把深度学习与隐马尔可夫模型结合，用于语音识别。"},
+{id:332,area:7,unit:"语音处理方法与应用",type:"j",q:"基于Attention/Transformer的端到端语音识别模型已广泛使用。",a:true,ex:"端到端ASR(如基于Transformer/Attention)直接映射语音到文本，效果显著。"},
+{id:333,area:7,unit:"语音处理方法与应用",type:"s",q:"“小爱/天猫精灵”等通过“唤醒词”启动，唤醒词识别属于_______。",opts:["关键词/唤醒词检测","完整连续语音识别","说话人识别","情感分析"],a:[0],ex:"唤醒词检测在连续音频中监听特定词，检测到后激活设备。"},
+{id:334,area:7,unit:"语音处理方法与应用",type:"s",q:"声纹（Voiceprint）是_______的唯一标识特征。",opts:["个体嗓音特征","文字内容","图片内容","网络地址"],a:[0],ex:"声纹由声道、发音习惯等决定，可用于身份认证。"},
+{id:335,area:7,unit:"语音处理方法与应用",type:"s",q:"语音情感识别用于判断说话人的_______。",opts:["喜怒哀乐等情感状态","身高体重","职业学历","银行账号"],a:[0],ex:"语音情感识别分析语调等特征识别情绪，用于客服质检等。"},
+{id:336,area:7,unit:"语音处理基础",type:"s",q:"影响语音数字化质量的主要因素包括采样率和_______。",opts:["量化位数(比特数)","屏幕分辨率","CPU主频","硬盘容量"],a:[0],ex:"采样率与量化位数共同决定数字化语音的保真度。"},
+{id:337,area:7,unit:"语音处理基础",type:"j",q:"语音信号是非平稳的，但短时内可近似看成平稳信号。",a:true,ex:"语音是短时平稳的，故采用分帧处理，说法正确。"},
+{id:338,area:7,unit:"语音处理方法与应用",type:"s",q:"语音识别系统的“声学模型”主要负责_______。",opts:["建模语音特征与音素的关系","生成文本排版","压缩图像","管理数据库"],a:[0],ex:"声学模型建立声学特征与音素/字符的映射，语言模型建模文本概率。"},
+{id:339,area:7,unit:"语音处理方法与应用",type:"m",q:"语音识别系统通常包含的模块有_______。",opts:["声学模型","语言模型","解码器/搜索","前端预处理"],a:[0,1,2,3],ex:"前端处理+声学模型+语言模型+解码构成经典ASR系统。"},
+{id:340,area:7,unit:"语音处理基础",type:"s",q:"对语音进行“预加重”的主要目的是_______。",opts:["提升高频成分、补偿语音高频能量衰减","降低采样率","改变声道","去除所有噪声"],a:[0],ex:"预加重通过高通滤波提升高频，补偿语音高频衰减，利于特征提取。"},
+/* ================= 9. 自然语言处理 ================= */
+{id:341,area:8,unit:"自然语言处理基础",type:"s",q:"把连续的中文文本切分成词的过程称为_______。",opts:["分词(Tokenization)","词性标注","命名实体识别","句法分析"],a:[0],ex:"分词把句子切分为词/词元，是中文NLP的基础步骤。"},
+{id:342,area:8,unit:"自然语言处理基础",type:"s",q:"给句子中的每个词标注其词性(名词、动词等)称为_______。",opts:["词性标注(POS)","分词","实体识别","情感分析"],a:[0],ex:"词性标注给每个词标注词性类别，是经典NLP基础任务。"},
+{id:343,area:8,unit:"自然语言处理基础",type:"s",q:"从文本中识别“人名、地名、机构名”等专有名词称为_______。",opts:["命名实体识别(NER)","分词","机器翻译","文本摘要"],a:[0],ex:"NER标记文本中的命名实体(人名、地名、机构、时间等)。"},
+{id:344,area:8,unit:"自然语言处理基础",type:"s",q:"分析句子中各成分(主语、谓语、宾语)之间的关系属于_______。",opts:["句法分析","词法分析","语音识别","图像分割"],a:[0],ex:"句法分析研究句子结构，包括成分句法与依存句法。"},
+{id:345,area:8,unit:"自然语言处理基础",type:"m",q:"下列属于自然语言处理基础任务的有_______。",opts:["分词","词性标注","命名实体识别","句法分析"],a:[0,1,2,3],ex:"分词、词性标注、NER、句法分析都是NLP基础任务(与模拟卷多选4一致)。"},
+{id:346,area:8,unit:"自然语言处理基础",type:"j",q:"命名实体识别（NER）是信息抽取的重要基础。",a:true,ex:"NER抽取实体，为关系抽取、知识图谱构建提供基础，说法正确。"},
+{id:347,area:8,unit:"自然语言处理方法与应用",type:"s",q:"n-gram语言模型基于的假设是_______。",opts:["当前词只与前面n-1个词有关(马尔可夫假设)","所有词相互独立且无关","词无顺序","词由像素组成"],a:[0],ex:"n-gram假设当前词的概率只依赖前n-1个词，是经典统计语言模型。"},
+{id:348,area:8,unit:"自然语言处理方法与应用",type:"s",q:"Word2Vec的核心作用是_______。",opts:["把词映射为稠密低维向量(词嵌入)","把词转成音频","删除停用词","压缩文件"],a:[0],ex:"Word2Vec学习词的低维稠密向量表示，语义相近的词向量也相近。"},
+{id:349,area:8,unit:"自然语言处理方法与应用",type:"s",q:"“国王-男人+女人≈女王”体现Word2Vec词向量的_______能力。",opts:["语义关系可通过向量运算表达","随机初始化","无法比较","只能表示语法"],a:[0],ex:"词向量能捕捉语义类比关系，支持向量运算(与模拟卷第10题一致)。"},
+{id:350,area:8,unit:"自然语言处理方法与应用",type:"m",q:"下列属于词表示（词嵌入）方法的有_______。",opts:["One-hot独热编码","n-gram统计","Word2Vec","GloVe"],a:[0,1,2,3],ex:"独热、n-gram、Word2Vec、GloVe都是词表示方法。"},
+{id:351,area:8,unit:"自然语言处理方法与应用",type:"s",q:"将一段文本从一种语言翻译成另一种语言，属于_______。",opts:["机器翻译(MT)","文本分类","命名实体识别","分词"],a:[0],ex:"机器翻译是NLP典型垂直任务。"},
+{id:352,area:8,unit:"自然语言处理方法与应用",type:"s",q:"“根据用户问题从知识中给出答案”的系统称为_______。",opts:["问答系统(QA)","语音识别","图像生成","机器翻译"],a:[0],ex:"问答系统根据问题检索/推理给出答案，是NLP重要应用。"},
+{id:353,area:8,unit:"自然语言处理方法与应用",type:"s",q:"从文本中提取结构化信息(实体、关系、事件)属于_______。",opts:["信息抽取(IE)","句法分析","语音增强","风格迁移"],a:[0],ex:"信息抽取抽取实体、关系、事件等结构化信息，服务于知识图谱。"},
+{id:354,area:8,unit:"自然语言处理方法与应用",type:"s",q:"判断影评“好评/差评”属于NLP中的_______。",opts:["情感分析/文本分类","机器翻译","分词","语音合成"],a:[0],ex:"情感分析判断文本情感极性，是文本分类的应用。"},
+{id:355,area:8,unit:"自然语言处理方法与应用",type:"s",q:"把一篇文章压缩成几句摘要的技术称为_______。",opts:["自动文本摘要","机器翻译","命名实体识别","词性标注"],a:[0],ex:"文本摘要生成精简版本，分抽取式与生成式。"},
+{id:356,area:8,unit:"自然语言处理方法与应用",type:"s",q:"BERT、GPT等预训练语言模型的基础架构是_______。",opts:["Transformer","KNN","K-Means","朴素贝叶斯"],a:[0],ex:"BERT(编码器)、GPT(解码器)均基于Transformer架构。"},
+{id:357,area:8,unit:"自然语言处理方法与应用",type:"j",q:"BERT是一种基于Transformer编码器的预训练语言模型。",a:true,ex:"BERT用Transformer编码器做掩码语言模型预训练，说法正确。"},
+{id:358,area:8,unit:"自然语言处理方法与应用",type:"s",q:"“深度学习框架让模型自动学习句子表示”，句子级建模常用_______。",opts:["RNN/LSTM/Transformer","K-Means","PCA","决策树"],a:[0],ex:"句子建模用RNN/LSTM/Transformer编码整句语义。"},
+{id:359,area:8,unit:"自然语言处理方法与应用",type:"m",q:"下列属于NLP垂直应用任务的有_______。",opts:["机器翻译","问答系统","信息抽取","情感分析"],a:[0,1,2,3],ex:"机器翻译、问答、信息抽取、情感分析等都是NLP垂直任务。"},
+{id:360,area:8,unit:"自然语言处理方法与应用",type:"s",q:"TF-IDF常用于衡量_______。",opts:["词在文档中的重要程度","词的长度","词的发音","词的颜色"],a:[0],ex:"TF-IDF结合词频与逆文档频率衡量词对文档的重要性，用于文本特征与检索。"},
+{id:361,area:8,unit:"自然语言处理基础",type:"s",q:"“把文本中的常用虚词、无实义词过滤掉”指的是去除_______。",opts:["停用词(Stopwords)","命名实体","高频实词","标点"],a:[0],ex:"停用词如“的、了、是”等无实义，常在预处理中移除。"},
+{id:362,area:8,unit:"自然语言处理方法与应用",type:"s",q:"“全文检索时返回相关文档的排序”主要依靠_______。",opts:["检索与排序(如TF-IDF/BM25/向量检索)","语音识别","图像分割","风格迁移"],a:[0],ex:"信息检索通过词法/语义相关性对文档排序。"},
+{id:363,area:8,unit:"自然语言处理方法与应用",type:"s",q:"大语言模型生成回答前，先从外部知识库检索相关内容的过程，属于_______。",opts:["检索增强生成(RAG)","纯参数记忆","数据清洗","正则化"],a:[0],ex:"RAG在生成前检索相关知识注入上下文，减少幻觉(与模拟卷第13题一致)。"},
+{id:364,area:8,unit:"自然语言处理基础",type:"j",q:"中文分词比英文分词通常更困难，因为中文词间没有明显的空格分隔。",a:true,ex:"中文没有天然空格边界，分词需结合词典与模型，难度较高。"},
+
+/* ================= 10. AI前沿与生成式大模型 ================= */
+{id:365,area:9,unit:"数据增强技术",type:"s",q:"扩散模型(Diffusion)生成图像的基本思路是_______。",opts:["从噪声逐步去噪恢复图像","直接查库复制","随机拼贴","线性回归"],a:[0],ex:"扩散模型学习反向去噪过程，从高斯噪声逐步生成图像。"},
+{id:366,area:9,unit:"数据增强技术",type:"s",q:"GAN由生成器和判别器两部分构成，判别器的作用是_______。",opts:["区分真实样本与生成样本","生成新样本","编码输入","做分类标签"],a:[0],ex:"判别器判断输入是真实还是生成，与生成器对抗训练。"},
+{id:367,area:9,unit:"数据增强技术",type:"j",q:"扩散模型和GAN都可用于生成逼真图像等生成式AI任务。",a:true,ex:"扩散模型与GAN都是主流图像生成方法。"},
+{id:368,area:9,unit:"多模态技术",type:"s",q:"同时处理文本、图像、音频等多种信息的技术称为_______。",opts:["多模态学习","单模态学习","纯文本处理","纯图像处理"],a:[0],ex:"多模态学习联合处理多种模态数据，如图文、音视频。"},
+{id:369,area:9,unit:"多模态技术",type:"s",q:"“图生文”“文生图”等应用依赖_______技术。",opts:["多模态模型","纯数据库查询","K-Means","决策树"],a:[0],ex:"多模态模型在视觉与语言之间建立联系，实现图文互转。"},
+{id:370,area:9,unit:"多模态技术",type:"m",q:"下列属于多模态数据的有_______。",opts:["文本","图像","音频","视频"],a:[0,1,2,3],ex:"文本、图像、音频、视频都是常见模态，多模态学习联合建模它们。"},
+{id:371,area:9,unit:"分布式机器学习与联邦学习",type:"s",q:"把训练任务分布到多台机器/设备并行执行的方式称为_______。",opts:["分布式机器学习","单机训练","模型剪枝","数据脱敏"],a:[0],ex:"分布式机器学习在多节点并行训练，解决算力与数据规模瓶颈。"},
+{id:372,area:9,unit:"分布式机器学习与联邦学习",type:"s",q:"联邦学习(Federated Learning)的核心特点是_______。",opts:["数据不出本地，只共享模型参数更新","必须集中所有数据","只能单机运行","不需要通信"],a:[0],ex:"联邦学习在各参与方本地训练、只上传模型更新，保护数据隐私。"},
+{id:373,area:9,unit:"分布式机器学习与联邦学习",type:"j",q:"联邦学习要求所有训练数据必须集中存储在一个中心服务器上。",a:false,ex:"联邦学习恰恰强调数据不出本地、分散训练，故说法错误(与模拟卷是非7一致)。"},
+{id:374,area:9,unit:"生成式大模型原理与技术",type:"s",q:"大模型先在海量无标注文本上进行学习，称为_______。",opts:["预训练(Pre-training)","微调","对齐","量化"],a:[0],ex:"预训练用海量文本学习通用语言能力，之后可微调或对齐。"},
+{id:375,area:9,unit:"生成式大模型原理与技术",type:"s",q:"在预训练基础上，用下游任务数据进一步训练称为_______。",opts:["微调(Fine-tuning)","初始化","归一化","蒸馏"],a:[0],ex:"微调在预训练模型上用任务数据调整参数，适配具体任务。"},
+{id:376,area:9,unit:"生成式大模型原理与技术",type:"s",q:"RAG（检索增强生成）的核心流程是_______。",opts:["先检索相关知识，再基于检索结果生成","只靠参数记忆","随机生成","删除知识库"],a:[0],ex:"RAG=检索(Retrieval)+生成(Generation)，先召回相关文档再生成答案。"},
+{id:377,area:9,unit:"生成式大模型原理与技术",type:"j",q:"RAG可以缓解大模型的幻觉问题并利用最新外部知识。",a:true,ex:"RAG把外部知识检索结果注入上下文，提高事实性、降低幻觉。"},
+{id:378,area:9,unit:"生成式大模型原理与技术",type:"s",q:"GPT、BERT等大模型的基础架构是_______。",opts:["Transformer","KNN","K-Means","朴素贝叶斯"],a:[0],ex:"主流大语言模型都基于Transformer架构(编码器/解码器)。"},
+{id:379,area:9,unit:"生成式大模型原理与技术",type:"s",q:"训练大模型常用的深度学习框架包括_______。",opts:["PyTorch、TensorFlow、MindSpore、PaddlePaddle","Photoshop、Excel","Word、PPT","Git、SVN"],a:[0],ex:"PyTorch、TensorFlow、MindSpore、飞桨等是训练大模型的主流框架。"},
+{id:380,area:9,unit:"生成式大模型原理与技术",type:"s",q:"RLHF（基于人类反馈的强化学习）用于_______。",opts:["让模型输出对齐人类偏好","压缩模型","加速下载","加密数据"],a:[0],ex:"RLHF通过人类反馈训练奖励模型，再用强化学习微调使模型对齐人类偏好。"},
+{id:381,area:9,unit:"生成式大模型原理与技术",type:"s",q:"“让模型遵循指令、符合人类价值观与意图”的过程称为_______。",opts:["模型对齐(Alignment)","数据增强","模型蒸馏","特征降维"],a:[0],ex:"模型对齐(如RLHF、指令微调)使模型安全、有用、可控。"},
+{id:382,area:9,unit:"生成式大模型原理与技术",type:"s",q:"调整学习率、批次大小等训练设置称为_______。",opts:["超参数调整","参数初始化","梯度裁剪","数据标注"],a:[0],ex:"学习率、batch、层数、温度等超参数的调优显著影响训练效果。"},
+{id:383,area:9,unit:"生成式大模型原理与技术",type:"s",q:"为降低大模型推理的资源开销，常采用_______技术。",opts:["量化、蒸馏、缓存","增大模型","增加延迟","删除数据"],a:[0],ex:"量化、知识蒸馏、KV缓存、批处理等优化推理速度与资源。"},
+{id:384,area:9,unit:"生成式大模型原理与技术",type:"m",q:"下列属于大模型训练相关技术的有_______。",opts:["预训练","微调(含LoRA)","模型对齐(RLHF)","超参数调整"],a:[0,1,2,3],ex:"预训练、微调、对齐、超参数调整都是大模型训练技术(对应考纲)。"},
+{id:385,area:9,unit:"智能体与具身智能",type:"s",q:"能感知环境、自主规划并调用工具完成任务的人工智能系统称为_______。",opts:["智能体(Agent)","数据库","操作系统","编译器"],a:[0],ex:"智能体具备感知、决策、工具调用与自主规划能力，如AI助手。"},
+{id:386,area:9,unit:"智能体与具身智能",type:"s",q:"“具身智能(Embodied AI)”强调的是_______。",opts:["智能体通过身体与环境物理交互感知和行动","纯文本推理","纯图像生成","纯数据库检索"],a:[0],ex:"具身智能把智能与机器人身体结合，强调在物理世界中感知与交互。"},
+{id:387,area:9,unit:"智能体与具身智能",type:"j",q:"智能体通常具备目标规划、工具调用与自主决策能力。",a:true,ex:"智能体可根据目标自主规划、调用API/工具并决策执行。"},
+{id:388,area:9,unit:"生成式大模型原理与技术",type:"s",q:"vLLM等推理引擎的核心优化技术包括_______。",opts:["Continuous Batching(连续批处理)与PagedAttention","增大模型","关闭缓存","纯串行"],a:[0],ex:"vLLM用连续批处理与分页注意力(PagedAttention)提升吞吐、降低显存碎片。"},
+{id:389,area:9,unit:"生成式大模型原理与技术",type:"j",q:"vLLM通过连续批处理和PagedAttention显著提升大模型推理性能。",a:true,ex:"vLLM两大核心优化即Continuous Batching与PagedAttention(与模拟卷单选6一致)。"},
+{id:390,area:9,unit:"生成式大模型原理与技术",type:"s",q:"大模型推理采用流式输出(Streaming)的主要好处是_______。",opts:["降低首token延迟、逐token即时响应","减少模型参数量","提高训练吞吐","保证推理精度更高"],a:[0],ex:"流式输出边生成边返回，降低首token延迟，改善体验(与模拟卷单选7一致)。"},
+{id:391,area:9,unit:"生成式大模型原理与技术",type:"s",q:"投机解码(Speculative Decoding)的核心思想是_______。",opts:["用小模型草拟多个候选，大模型验证，提升解码吞吐","加大模型参数量","关闭KV缓存","纯贪心解码"],a:[0],ex:"投机解码用草稿模型并行生成候选、目标模型验证接受，降低每token延迟。"},
+{id:392,area:9,unit:"生成式大模型原理与技术",type:"s",q:"将文本转换为稠密向量以便向量检索的技术称为_______。",opts:["嵌入(Embedding)","独热编码硬编码","Base64","加密"],a:[0],ex:"Embedding把文本映射为向量，用于语义相似检索(向量数据库)。"},
+{id:393,area:9,unit:"生成式大模型原理与技术",type:"s",q:"用于存储向量并支持相似度检索的数据库称为_______。",opts:["向量数据库(如Milvus、Faiss)","关系数据库","文件系统","注册表"],a:[0],ex:"向量数据库(如Milvus)按向量相似度检索，是RAG的重要组件。"},
+{id:394,area:9,unit:"生成式大模型原理与技术",type:"s",q:"LoRA等参数高效微调(PEFT)的特点是_______。",opts:["只训练少量新增参数，显著降低微调成本","必须训练全部参数","不需要数据","只能用于图像"],a:[0],ex:"LoRA冻结原参数、训练低秩增量，是参数高效微调方法(与模拟卷多选2一致)。"},
+{id:395,area:9,unit:"生成式大模型原理与技术",type:"m",q:"下列属于参数高效微调(PEFT)方法的有_______。",opts:["LoRA","Prefix Tuning","P-Tuning","Adapter"],a:[0,1,2,3],ex:"LoRA、Prefix Tuning、P-Tuning、Adapter等都是PEFT方法。"},
+{id:396,area:9,unit:"生成式大模型原理与技术",type:"s",q:"“让大模型能够调用外部函数/API”的能力称为_______。",opts:["Function Calling(工具调用)","token化","量化","正则化"],a:[0],ex:"Function Calling让模型生成结构化调用指令，对接外部工具与数据。"},
+{id:397,area:9,unit:"生成式大模型原理与技术",type:"s",q:"多跳检索（Multi-hop Retrieval）主要用于解决需要_______的复杂问题。",opts:["跨多个文档/多步推理的查询","单个词语匹配","纯数值计算","图像裁剪"],a:[0],ex:"多跳检索需要跨多个文档串联信息、多步推理，用于复杂问答(与模拟卷单选5一致)。"},
+{id:398,area:9,unit:"生成式大模型原理与技术",type:"m",q:"下列属于RAG系统关键组件的包括_______。",opts:["文本切分与向量化","向量检索","重排序/生成","知识库管理"],a:[0,1,2,3],ex:"RAG链路包含切分、向量化、检索、重排、生成与知识库管理。"},
+{id:399,area:9,unit:"生成式大模型原理与技术",type:"s",q:"评测RAG系统常用指标包括召回率和_______。",opts:["答案忠实度(正确性)","模型参数量","网络带宽","训练轮数"],a:[0],ex:"RAG评测常用召回率、答案忠实度/正确性、相关性等(与模拟卷多选1一致)。"},
+{id:400,area:9,unit:"生成式大模型原理与技术",type:"j",q:"知识蒸馏是把大模型的输出知识迁移到较小模型的方法。",a:true,ex:"知识蒸馏用大模型软输出训练小模型，实现模型压缩与加速。"},
+{id:401,area:9,unit:"生成式大模型原理与技术",type:"s",q:"大模型能处理的输入token长度上限称为_______。",opts:["上下文窗口(Context Window)","显存大小","学习率","batch size"],a:[0],ex:"上下文窗口决定模型单次能处理的最大token数，如128K。"},
+{id:402,area:9,unit:"生成式大模型原理与技术",type:"s",q:"大模型“长文档中部信息容易被忽略”的现象，常与注意力机制对长序列的_______有关。",opts:["信息处理能力(注意力分配)不足","文档加密","网络延迟","存储不足"],a:[0],ex:"大模型对长文本中部的注意力可能较弱，导致提取中部关键信息准确率下降。"},
+{id:403,area:9,unit:"分布式机器学习与联邦学习",type:"s",q:"数据并行、模型并行、流水线并行属于大模型训练的_______技术。",opts:["分布式并行策略","数据清洗","量化","蒸馏"],a:[0],ex:"分布式并行(数据/模型/流水线并行)支撑超大模型训练。"},
+{id:404,area:9,unit:"智能体与具身智能",type:"s",q:"机器人结合大模型进行规划、感知与行动，属于_______的研究方向。",opts:["具身智能(Embodied AI)","纯文本NLP","传统机械","网页设计"],a:[0],ex:"具身智能把大模型/感知/规划与机器人实体结合。"},
+{id:405,area:9,unit:"生成式大模型原理与技术",type:"s",q:"让模型“一次处理大量请求且不相互阻塞”的批处理方式，在vLLM中称为_______。",opts:["Continuous Batching(连续批处理)","静态批处理","顺序执行","定时任务"],a:[0],ex:"连续批处理允许请求动态加入/完成，提升GPU利用率。"},
+/* ================= 11. AI赋能千行百业 ================= */
+{id:406,area:10,unit:"智能社会",type:"s",q:"利用AI提升城市治理、公共服务的水平，属于_______的应用。",opts:["智能社会/智慧城市","智能推荐","智能创意","语音合成"],a:[0],ex:"智能社会将AI应用于社会治理、公共服务等，提升城市运行效率。"},
+{id:407,area:10,unit:"智能交通",type:"s",q:"自动驾驶、智能交通调度属于_______领域的应用。",opts:["智能交通","智能医疗","智能推荐","智慧教育"],a:[0],ex:"智能交通包括自动驾驶、信号优化、拥堵预测等。"},
+{id:408,area:10,unit:"智能医疗",type:"s",q:"AI辅助医学影像诊断、网上医生咨询属于_______领域的应用。",opts:["智能医疗","智能制造","智能推荐","智能创意"],a:[0],ex:"智能医疗覆盖影像辅助诊断、药物研发、健康咨询等。"},
+{id:409,area:10,unit:"智能制造",type:"s",q:"无人AI工厂、智能质检属于_______领域的应用。",opts:["智能制造","智能交通","智慧教育","智能推荐"],a:[0],ex:"智能制造用AI实现自动化生产、质检与预测性维护。"},
+{id:410,area:10,unit:"智能创意",type:"s",q:"数字人、AI作画、AI视频制作、AI音乐属于_______领域的应用。",opts:["智能创意","智能医疗","智能交通","智能社会"],a:[0],ex:"智能创意用生成式AI辅助艺术与内容创作。"},
+{id:411,area:10,unit:"智能推荐",type:"s",q:"电商“猜你喜欢”、短视频推荐属于_______领域的应用。",opts:["智能推荐","智能制造","智能医疗","智能社会"],a:[0],ex:"智能推荐根据用户行为做个性化内容/商品推荐。"},
+{id:412,area:10,unit:"智慧教育",type:"s",q:"AI助教、AI助学、AI助研属于_______领域的应用。",opts:["智慧教育","智能交通","智能制造","智能创意"],a:[0],ex:"智慧教育利用AI提供个性化学习、辅导与研究支持。"},
+{id:413,area:10,unit:"机器人",type:"s",q:"移动机器人(AMR)、工业协作机器人(Cobot)、无人配送机器人属于_______的应用。",opts:["机器人领域","智能推荐","智慧教育","智能社会"],a:[0],ex:"机器人结合AI实现自主移动、协作与配送。"},
+{id:414,area:10,unit:"智能驱动科学研究",type:"s",q:"AIfor蛋白质结构分析、AIfor新材料研发属于_______方向。",opts:["AI4Science(AI驱动科学研究)","智能推荐","智能创意","智慧教育"],a:[0],ex:"AI4Science用AI加速科学发现，如AlphaFold预测蛋白质结构。"},
+{id:415,area:10,unit:"智能创意",type:"j",q:"数字人、AI编剧、AI作画都属于智能创意领域的典型应用。",a:true,ex:"数字人、AI编剧、AI作画/视频/音乐等均为智能创意应用。"},
+{id:416,area:10,unit:"智能医疗",type:"m",q:"下列属于智能医疗典型应用的有_______。",opts:["AI医学影像辅助诊断","智能导诊与问诊","药物研发辅助","健康风险预测"],a:[0,1,2,3],ex:"影像辅助诊断、导诊、药物研发、健康预测等都属于智能医疗。"},
+{id:417,area:10,unit:"智能推荐",type:"s",q:"短视频平台“个性化推荐”主要依据用户的_______。",opts:["观看/点击等行为数据","出生地","屏幕尺寸","账号年龄"],a:[0],ex:"推荐系统利用用户行为数据建立兴趣模型做个性化推荐。"},
+{id:418,area:10,unit:"智慧教育",type:"s",q:"AI根据学生答题情况动态推送练习题，体现智慧教育的_______特点。",opts:["个性化/自适应学习","统一填鸭","完全随机","与学习无关"],a:[0],ex:"智慧教育支持个性化与自适应学习路径。"},
+{id:419,area:10,unit:"机器人",type:"m",q:"下列属于现代机器人类型的有_______。",opts:["移动机器人(AMR)","工业协作机器人(Cobot)","无人配送机器人","智能仓储机器人"],a:[0,1,2,3],ex:"AMR、Cobot、无人配送、智能仓储等都是机器人应用类型。"},
+{id:420,area:10,unit:"智能驱动科学研究",type:"s",q:"AlphaFold是AI在_______领域的标志性成果。",opts:["蛋白质结构预测","智能推荐","语音合成","图像风格迁移"],a:[0],ex:"AlphaFold用AI预测蛋白质三维结构，是AI4Science的代表。"},
+{id:421,area:10,unit:"智能交通",type:"j",q:"自动驾驶结合计算机视觉、传感器融合与大模型，是智能交通的重要方向。",a:true,ex:"自动驾驶融合视觉、雷达、地图与大模型决策，属智能交通核心应用。"},
+{id:422,area:10,unit:"从业能力",type:"s",q:"阅读最新AI论文、跟踪前沿进展属于从业能力中的_______。",opts:["论文阅读/持续学习能力","项目规划能力","编程调试能力","团队协作能力"],a:[0],ex:"考纲中“从业能力”包含论文阅读能力与项目规划实践能力。"},
+{id:423,area:10,unit:"从业能力",type:"s",q:"把一个AI想法设计成可执行项目并推进落地，属于从业能力中的_______。",opts:["项目规划和实践能力","论文阅读能力","机器操作能力","文档排版能力"],a:[0],ex:"项目规划与实践能力体现把创意落地为可交付成果。"},
+{id:424,area:10,unit:"从业能力",type:"m",q:"考纲中“从业能力”要求的主要能力包括_______。",opts:["论文阅读能力","项目规划和实践能力","持续学习能力","团队协作与沟通"],a:[0,1,2,3],ex:"从业能力强调论文阅读、项目实践、持续学习与协作等综合素养。"},
+{id:425,area:10,unit:"智能社会",type:"m",q:"下列属于AI赋能千行百业的典型领域的有_______。",opts:["智能交通","智能医疗","智能制造","智能创意"],a:[0,1,2,3],ex:"交通、医疗、制造、创意、教育、推荐等都是AI赋能领域。"},
+{id:426,area:10,unit:"智能制造",type:"s",q:"“预测性维护”用AI根据设备状态预测故障，属于_______的应用。",opts:["智能制造","智能推荐","智慧教育","语音处理"],a:[0],ex:"预测性维护是智能制造的重要方向，减少停机损失。"},
+{id:427,area:10,unit:"智能推荐",type:"j",q:"智能推荐系统需要依赖用户的兴趣与行为数据。",a:true,ex:"推荐系统基于用户行为、画像等数据建模兴趣。"},
+{id:428,area:10,unit:"智能驱动科学研究",type:"j",q:"AI4Science指利用人工智能加速量子物理、生物制药、新材料等科学研究。",a:true,ex:"AI4Science在量子、生物、材料、气候等领域加速科学研究。"},
+{id:429,area:10,unit:"智慧教育",type:"s",q:"智能答疑助手、AI作文批改属于_______领域应用。",opts:["智慧教育","智能交通","智能推荐","智能制造"],a:[0],ex:"智能答疑、作文批改、助教等是智慧教育典型场景。"},
+{id:430,area:10,unit:"智能医疗",type:"s",q:"“AI看片”指的是用AI对医学影像进行_______。",opts:["影像分析与辅助诊断","图像娱乐化","风格迁移","图像压缩"],a:[0],ex:"AI看片指AI辅助解读CT、X光等医学影像，辅助医生诊断。"},
+
+/* ================= 12. AI安全与伦理 ================= */
+{id:431,area:11,unit:"可信人工智能",type:"s",q:"可信人工智能通常强调的四个维度是_______。",opts:["可解释性、安全性、公正性、隐私性","速度、价格、颜色、大小","内存、硬盘、CPU、显卡","文字、图像、声音、视频"],a:[0],ex:"可信AI四要素：可解释性(能说明为何得出此结论)、安全性、公正性(公平无偏见)、隐私性。"},
+{id:432,area:11,unit:"可信人工智能",type:"s",q:"“模型能解释自己为什么做出某个判断”体现的是AI的_______。",opts:["可解释性","运行速度","存储容量","联网能力"],a:[0],ex:"可解释性让AI决策透明可理解，便于审查与信任。"},
+{id:433,area:11,unit:"可信人工智能",type:"s",q:"AI系统对不同人群一视同仁、不因性别/种族产生歧视，体现的是_______。",opts:["公正性(公平性)","可解释性","隐私性","安全性"],a:[0],ex:"公正性要求模型对不同群体公平，避免系统性偏见。"},
+{id:434,area:11,unit:"可信人工智能",type:"s",q:"AI系统保护个人数据不被泄露、违规使用，体现的是_______。",opts:["隐私性","公正性","可解释性","流畅度"],a:[0],ex:"隐私性要求AI在采集、存储、处理数据时保护个人隐私，遵守合规要求。"},
+{id:435,area:11,unit:"可信人工智能",type:"s",q:"防止AI系统被恶意攻击、产生有害行为，体现的是AI的_______。",opts:["安全性","可解释性","公正性","娱乐性"],a:[0],ex:"安全性要求AI系统对抗攻击、避免有害输出，如防提示注入、防越狱。"},
+{id:436,area:11,unit:"可信人工智能",type:"m",q:"可信人工智能（Trustworthy AI）关注的核心维度包括_______。",opts:["可解释性","安全性","公正性(公平)","隐私性"],a:[0,1,2,3],ex:"可解释、安全、公正、隐私是可信AI的四大核心维度。"},
+{id:437,area:11,unit:"可信人工智能",type:"j",q:"可解释性强的AI模型通常更容易被人类审查和信任。",a:true,ex:"可解释性提升透明度，便于发现错误与偏见，增强信任。"},
+{id:438,area:11,unit:"人工智能伦理",type:"s",q:"AI模型因训练数据中少数群体样本不足而产生的歧视，属于_______问题。",opts:["算法偏见/公平性","运行速度慢","存储不足","网络延迟"],a:[0],ex:"训练数据不平衡会引入偏见，需通过数据均衡、公平性评估等方法缓解。"},
+{id:439,area:11,unit:"人工智能伦理",type:"s",q:"差分隐私、联邦学习等技术主要用于保护AI中的_______。",opts:["用户隐私与数据安全","模型大小","推理速度","UI美观"],a:[0],ex:"差分隐私、联邦学习在保证模型效果的同时保护数据隐私。"},
+{id:440,area:11,unit:"人工智能伦理",type:"s",q:"构建负责任的人工智能系统，通常需要纳入_______等治理措施。",opts:["分群公平性评估、隐私影响评估、版本追踪、风险处置","只追求速度","忽略风险","完全不管数据"],a:[0],ex:"负责任AI需做公平性评估、隐私影响评估、模型/数据版本追踪与风险事件处置(对应模拟卷多选7)。"},
+{id:441,area:11,unit:"人工智能伦理",type:"s",q:"AI伦理原则通常强调AI应_______。",opts:["以人为本、公平、透明、负责","完全自由不受约束","替代人类所有决策","隐藏算法逻辑"],a:[0],ex:"AI伦理原则普遍强调以人为本、公平、透明、可问责、隐私保护。"},
+{id:442,area:11,unit:"人工智能伦理",type:"m",q:"下列属于负责任AI治理措施的有_______。",opts:["公平性评估","隐私影响评估","模型与数据版本追踪","风险事件处置与复核"],a:[0,1,2,3],ex:"公平性、隐私评估、版本追踪、风险处置与复核是负责任AI的重要治理手段。"},
+{id:443,area:11,unit:"人工智能伦理",type:"j",q:"AI系统应当尊重用户隐私，避免未经同意收集和滥用个人数据。",a:true,ex:"隐私保护是AI伦理与法规(如个人信息保护法)的基本要求。"},
+{id:444,area:11,unit:"人工智能伦理",type:"s",q:"深度伪造(Deepfake)技术的滥用可能造成的社会风险是_______。",opts:["身份冒用、虚假信息传播","更快地打印文档","降低网速","损坏硬件"],a:[0],ex:"Deepfake可伪造人脸/声音，带来诈骗、造谣、名誉损害等风险。"},
+{id:445,area:11,unit:"人工智能伦理",type:"s",q:"当AI做出错误决策造成损害时，明确由谁负责，属于AI的_______问题。",opts:["责任归属/问责","可解释性","公平性","隐私性"],a:[0],ex:"AI责任归属(问责)是伦理与法律的重要议题。"},
+{id:446,area:11,unit:"人工智能伦理",type:"s",q:"为避免AI输出有害内容，模型在训练中对齐到人类价值观，这个过程属于_______。",opts:["模型对齐/价值对齐","模型压缩","数据增强","特征降维"],a:[0],ex:"模型对齐(如RLHF)让模型输出符合人类意图与安全规范。"},
+{id:447,area:11,unit:"可信人工智能",type:"s",q:"对训练数据中的身份证号、手机号做替换或模糊化，属于_______。",opts:["数据脱敏","数据增广","模型量化","特征选择"],a:[0],ex:"数据脱敏在保留可用性的前提下隐藏敏感字段，保护隐私。"},
+{id:448,area:11,unit:"人工智能伦理",type:"j",q:"AI系统在关键决策(如医疗、司法)中应保留人类监督。",a:true,ex:"关键领域需人类在环(HITL)监督，防止AI错误决策造成严重后果。"},
+{id:449,area:11,unit:"人工智能伦理",type:"s",q:"“评估模型在性别、种族等子群体上表现是否均衡”属于_______。",opts:["公平性评估","模型蒸馏","梯度裁剪","特征工程"],a:[0],ex:"公平性评估检查模型在各子群体上的表现差异，识别偏见。"},
+{id:450,area:11,unit:"可信人工智能",type:"m",q:"下列属于AI安全风险或应对的有_______。",opts:["提示注入/越狱攻击","模型幻觉","对抗样本攻击","内容审核与安全护栏"],a:[0,1,2,3],ex:"提示注入、幻觉、对抗样本是AI安全风险；内容审核与护栏用于防范。"},
+{id:451,area:11,unit:"人工智能伦理",type:"s",q:"“透明性”在AI中通常指_______。",opts:["模型的原理、用途、数据来源可被了解","模型运行更快","模型更大","界面更漂亮"],a:[0],ex:"透明性要求公开AI的能力边界、训练数据与机制，便于监督与选择。"},
+{id:452,area:11,unit:"人工智能伦理",type:"j",q:"AI伦理要求开发者在算法设计、数据采集和应用部署全过程都考虑社会影响。",a:true,ex:"负责任AI贯穿全生命周期，持续评估伦理与社会影响。"},
+/* ================= 主观题（参照45A模拟卷 操作/实践/综合风格） ================= */
+{id:453,area:1,unit:"linux操作命令(主观)",type:"sub",q:"【基础操作题】某RAG应用要把向量数据库(如Milvus)和推理服务(如vLLM)部署在同一台Linux服务器上，但磁盘空间不足，发现 /var/log 目录下日志文件占用大量空间。请给出至少两条清理日志的Linux命令，并说明清理时需要注意什么以避免影响正在运行的服务。",a:"常用命令：① du -sh /var/log 查看占用；② find /var/log -name \"*.log\" -mtime +7 -delete 删除7天前的日志；③ sudo truncate -s 0 /var/log/xxx.log 清空(截断)正在使用的日志文件；④ 或使用 logrotate 按大小/时间轮转压缩日志。注意事项：先确认哪些日志可删、不要删除正在写入的日志(避免服务写入失败/文件句柄问题)，大日志优先用 truncate 清空而非 rm，删除前做好必要备份，不要删除系统关键日志目录结构。",ex:"清理磁盘要注意：用 du 定位占用、用 logrotate 自动化轮转、truncate 比 rm 更安全(不释放被打开的文件句柄)、删除前备份。这些是运维小白也需要的安全意识。"},
+{id:454,area:5,unit:"深度学习训练(主观)",type:"sub",q:"【基础操作题·代码补全】下面是基于PyTorch训练图像分类模型的代码片段，使用SGD优化器。请补全 ①②③ 三处，实现完整的“前向计算-损失计算-反向传播-参数更新”训练循环。\nmodel.train()\noptimizer = torch.optim.SGD(model.parameters(), lr=1e-3)\nfor images, labels in train_loader:\n    images = torchvision.transforms.RandomHorizontalFlip(p=0.5)(images)\n    ①______        # 梯度清零\n    outputs = model(images)   # 前向计算\n    loss = torch.nn.functional.cross_entropy(outputs, labels) ②______   # 反向传播\n    ③______        # 参数更新",a:"① optimizer.zero_grad() ② .backward() 即 loss.backward() ③ optimizer.step()。完整：optimizer.zero_grad() 清空上一轮梯度；loss.backward() 反向传播计算各参数梯度；optimizer.step() 按SGD更新参数。顺序必须是 清零→前向→算损失→反向→更新，每轮循环都要重复。",ex:"对应模拟卷第6页操作题4。训练循环四步口诀：①清梯度 ②前向+算损失 ③反向传播 ④更新参数。顺序不能乱，否则梯度会累加或未更新。"},
+{id:455,area:1,unit:"AI Coding工具(主观)",type:"sub",q:"【基础操作题】当前AI Coding和AI开发助手生态快速发展。请写出至少3个你了解的热门AI Coding / Agent / 工具相关名称，并至少对其中1个简要说明其功能。",a:"示例：① Cursor（AI代码编辑器，可在编辑器内对话补全/改代码）② GitHub Copilot（代码自动补全助手）③ 通义灵码 / 豆包MarsCode（国产AI编程助手）④ Claude Code / Codex（AI coding agent，可自动执行编码任务）⑤ SWE-agent / OpenHands（开源编码智能体）。功能说明示例：Cursor 在VS Code基础上集成大模型，可选中代码直接让AI解释、补全、重构、修bug，支持多文件上下文理解。",ex:"对应模拟卷操作题1。AI Coding工具核心价值：代码补全、解释、重构、自动修复、智能体自主开发。记住主流几个名字即可。"},
+{id:456,area:9,unit:"RLHF(主观)",type:"sub",q:"【基础操作题】论文《Training Language Models to Follow Instructions with Human Feedback》提出了基于人类反馈的强化学习（RLHF）。请阐述大模型在“人类对齐”方面的发展方向，并说明RLHF中奖励模型的作用。",a:"发展方向：让大模型输出符合人类意图、价值观、安全规范，从单纯“能生成”转向“生成得有用、安全、可控”；技术路径包括指令微调(Instruction Tuning)、RLHF、DPO、宪法AI、可解释与可审计等。奖励模型(Reward Model)的作用：用人类对模型回答的偏好打分(好/坏排序)训练一个奖励模型，用它代替人工为强化学习(如PPO)提供每步/整体的奖励信号，从而引导策略模型持续优化，使其输出更符合人类偏好。",ex:"对应模拟卷操作题3。RLHF三阶段：①监督微调 ②训练奖励模型(人类偏好→打分) ③用奖励信号做强化学习。奖励模型是把“人类偏好”变成“可计算分数”的关键桥梁。"},
+{id:457,area:6,unit:"计算机视觉应用(主观)",type:"sub",q:"【基础操作题】某城市河道部门部署AI巡检系统：摄像头拍摄河面图像，系统识别塑料瓶、树枝等漂浮物并生成清理建议。技术流程：河面图像→[A]定位漂浮物→[B]识别漂浮物类别→[C]生成清理建议→发给工作人员。请回答：\n(1) 步骤[A]通常使用什么计算机视觉技术？\n(2) 步骤[B]区分“塑料瓶”和“树枝”主要依据哪些特征(举两类)？\n(3) 补全Python调用图像识别API代码。\n(4) 模型识别置信度低于60%时转人工确认，体现了哪项AI治理原则？",a:"(1)[A]定位漂浮物用【目标检测】(输出边界框定位物体位置)，常用YOLO等。(2)[B]区分塑料瓶与树枝的依据：①形状/轮廓特征(塑料瓶多呈规则长条状，树枝不规则多分叉)；②颜色与纹理特征(塑料瓶颜色较均匀光滑，树枝有木纹、颜色偏褐)；③边缘/几何结构。(3)代码补全：①files ②data ③headers，即 requests.post(url, files=files, data=data, headers=headers)。(4)置信度低转人工，体现【谨慎/风险规避/可靠性优先】的治理原则(对应可信AI的安全性、避免低置信度误判造成危害)。",ex:"对应模拟卷操作题5。目标检测=定位+分类；视觉特征主要看形状、颜色、纹理；requests库上传文件的三个参数 files/data/headers；低置信度转人工是负责任的AI决策。"},
+{id:458,area:9,unit:"大模型推理部署(主观)",type:"sub",q:"【实践应用题】金融智能投研系统(智投)日咨询数千次、高并发波动大，所有请求都完整执行“向量检索-重排-大模型生成”全链路，导致推理成本高、延迟高、GPU利用率波动大。请设计包含“语义缓存、模型路由、连续批处理、投机解码”的全维度服务优化方案，并列出对应的核心观测指标。(注：存在误导观点，需甄别：全程用大模型最准无需优化；直接扩容GPU；语义缓存易过期不用；连续批处理收益有限。)",a:"方案要点：①语义缓存：对高频/相似问题命中缓存直接返回，减少重复推理(需处理缓存TTL与版本，避免旧数据)；②模型路由：按问题难度/类型路由到不同规模模型(简单走小模型，难走大模型)，平衡效果与成本；③连续批处理(Continuous Batching)：请求动态加入/完成，提高GPU吞吐与利用率；④投机解码：小模型草稿+大模型验证，降低每token延迟。核心观测指标：首token延迟(TTFT)、每token延迟(TPOT/ITL)、端到端延迟、吞吐(tokens/s)、GPU利用率、缓存命中率、成本/token、P99延迟、SLA达标率。",ex:"对应模拟卷实践应用题1(1)。甄别误导观点：①“全程用大模型最准”忽略成本与延迟，需路由与缓存；②“直接扩容GPU”治标不治本，应优化调度；③“语义缓存易过期”可通过TTL/失效机制解决；④“连续批处理收益有限”其实收益很大。观测指标要围绕“延迟、吞吐、利用率、成本”四个维度。"},
+{id:459,area:9,unit:"大模型推理部署(主观)",type:"sub",q:"【实践应用题】请回答大模型推理服务中静态批处理与连续批处理的核心差异，以及PagedAttention分页KV管理的优势(结合金融“动态增删请求”场景)。",a:"静态批处理 vs 连续批处理：①组批逻辑：静态按固定批次一起处理、一批等全部完成才释放；连续批处理允许新请求随时加入、完成的请求立即结束并释放资源。②显存占用：静态需为整批预留显存、利用率低；连续批处理按请求粒度管理，减少闲置。③KV Cache管理：静态KV缓存固定分配、易碎片；连续批处理配合分页式KV Cache按需分配、可共享。PagedAttention优势：把KV Cache按固定大小分页(类似操作系统虚拟内存)，按需分配、动态扩容，支持共享前缀，大幅降低显存碎片与浪费，从而高效支撑金融场景“动态增删请求”的高并发批处理调度。",ex:"对应模拟卷实践2(1)。记忆要点：连续批处理=更灵活、显存利用率更高、吞吐更大；PagedAttention=分页管理KV缓存、按需分配、降碎片。"},
+{id:460,area:9,unit:"大模型推理部署(主观)",type:"sub",q:"【实践应用题】为优化金融大模型流式生成的低延迟要求，团队计划引入投机解码(Speculative Decoding)。请说明其基本原理、为何能提升TPOT(每token延迟)，以及其适用边界与性能代价(什么情况下反而变慢)。",a:"基本原理：用一个更小、更快的“草稿模型(draft model)”快速生成一串候选token，再用目标大模型并行一次性验证这些候选，一次性接受正确的多个token，从而把多次串行解码变成“一次验证多个”。为何提升TPOT：投机解码用“小模型草稿+大模型批量验证”替代“逐token串行生成”，显著降低平均每token的推理时间，特别是在生成较规律、易被草稿模型猜中的文本上。适用边界与代价：①草稿模型与目标模型分布差异越大，接受率越低，收益越小甚至为负；②小模型草稿本身也要额外算力与显存；③对词汇极不确定、高度创造性/复杂推理的文本，草稿命中率低，验证成本高，反而变慢、额外开销增加。",ex:"对应模拟卷实践2(2)。记忆：投机解码=小模型草稿+大模型验证；好处=降延迟、提吞吐；代价=草稿不中时白算、双模型占资源。"},
+{id:461,area:9,unit:"大模型推理部署(主观)",type:"sub",q:"【实践应用题】金融落地大模型推理服务需兼顾高并发、低时延、合规可运维、量化适配、快速迭代。请说明大模型推理框架选型应重点考察的核心维度，并对比 vLLM、TGI、SGLang、TensorRT-LLM 的差异。",a:"选型核心维度：①性能与吞吐(TPOT/TTFT/tokens/s)；②显存利用与KV Cache管理；③高可用/稳定性与运维能力(监控、扩容、容错)；④功能支持(量化、投机解码、多模态、PagedAttention)；⑤生态与兼容性(与训练框架、HuggingFace模型、国产卡适配)；⑥合规与成本。四者差异：vLLM—开源主流、Continuous Batching+PagedAttention、吞吐高、社区活跃，兼容HF模型；TGI—HuggingFace推出的推理服务，集成度高、易部署；SGLang—主打RadixAttention前缀共享与结构化生成，长上下文/多轮效率高；TensorRT-LLM—NVIDIA闭源优化引擎，对英伟达GPU极致优化、延迟最低，但适配性强绑定N卡、定制成本高。",ex:"对应模拟卷实践2(3)。一句话记：vLLM吞吐强、TGI易用、SGLang前缀共享/长上下文强、TensorRT-LLM英伟达极致性能但绑定生态。"},
+{id:462,area:9,unit:"大模型推理部署(主观)",type:"sub",q:"【实践应用题】金融大模型高并发下长短请求混发，长耗时的批量合规核验、长研报分析占用GPU，拖慢理财咨询、实时风险预警等低延迟短请求。请设计请求调度方案：说明FCFS、优先级、抢占式三种调度策略的核心特点及各自在金融推理场景的问题，并说明需重点监控哪些指标用于限流与弹性扩容。",a:"三种策略：①FCFS(先来先服务)：按到达顺序处理，简单公平，但长请求阻塞后面短请求，造成短请求延迟飙升、SLA不达标；②优先级调度：短请求/高优先级任务优先，能保证关键低延迟请求，但可能导致长请求“饿死”或被无限推迟；③抢占式调度：高优先级可抢占低优先级正在执行的资源(如暂停长任务释放显存)，保障关键任务，但实现复杂、上下文切换与状态保存开销大、可能浪费已算部分。监控指标：GPU利用率、显存占用、队列长度/等待时长、TTFT与TPOT、P50/P99端到端延迟、请求吞吐、限流触发次数、各优先级任务的SLA达标率、算力弹性扩容水位。",ex:"对应模拟卷实践2(4)。记忆：FCFS公平但长请求拖累短请求；优先级保关键但可能饿死长任务；抢占式最灵活但开销大。监控围绕“负载、延迟、吞吐、队列、SLA”。"},
+{id:463,area:9,unit:"大模型推理部署(主观)",type:"sub",q:"【基础操作题】部署RAG应用需将向量数据库与vLLM运行在同一台Linux服务器。除清理日志外，请说明清理 /var/log 时避免影响正在运行服务的注意事项，并给出至少两条安全的清理命令。",a:"注意事项：①先 du 分析占用，确认哪些文件可删；②不要删除正在被服务写入的日志文件(避免句柄失效、写入失败)；③大日志用 truncate -s 0 清空而非 rm 删除；④优先用 logrotate 自动轮转压缩；⑤删除前备份重要日志。安全命令示例：du -sh /var/log/* ；find /var/log -name \"*.log\" -mtime +30 -exec truncate -s 0 {} \\; 或 logrotate -f /etc/logrotate.conf。",ex:"安全清理日志的核心：定位→备份→轮转→清空而非强删→保护正在写入的文件。"},
+{id:464,area:9,unit:"多Agent与智能体(主观)",type:"sub",q:"【是非题·主观化】“多Agent系统只要增加Agent数量，就一定比单Agent更可靠且成本更低。”这个说法对吗？请说明理由。",a:"不对。增加Agent数量并不必然更可靠或更便宜。理由：①Agent数量越多，相互通信、协调、编排的开销越大，成本反而上升；②多个Agent可能产生冲突、互相误导、任务重复或责任不清，若缺少有效的规划与编排，整体可靠性可能下降；③是否更可靠取决于任务是否适合分解、Agent之间协作机制是否良好，而非数量本身。",ex:"对应模拟卷是非题1。核心：质量取决于“协作与编排”，不是简单堆数量。"},
+{id:465,area:9,unit:"大模型API(主观)",type:"sub",q:"【基础操作题】某金融企业用大模型构建投研助手，用户问“今天央行最新公布的LPR利率是多少”，模型因训练数据截止于某日期无法回答。请说明如何用RAG解决这类时效性问题，并说明API返回HTTP 401状态码通常表示什么。",a:"RAG解决时效性：在调用大模型API前，先通过RAG从官网/实时数据源检索最新LPR等数据，把检索到的实时内容拼入提示词(Prompt)上下文，让模型基于最新信息生成回答，从而弥补训练数据截止导致的时效性不足。HTTP 401的含义：表示【身份认证失败/未授权】，通常是API密钥无效、缺失、过期或权限不足，需要检查API Key是否正确、是否有效、权限是否到位(不是请求参数格式错误——那是400)。",ex:"对应模拟卷是非题9、13。记忆：401=认证失败(密钥问题)，400=参数错误。RAG是把实时外部知识“喂”给模型的关键。"},
+{id:466,area:9,unit:"大模型推理(主观)",type:"sub",q:"【综合题·场景设计】某健康服务平台开发“社区就医智能陪诊助手”，根据患者症状、位置、就诊时间自动完成分诊建议、号源查询、路线规划、就诊提醒。请设计智能体的任务执行流，说明应调用哪些API及调用顺序。",a:"执行流(任务规划)：①解析患者需求(症状、时间、位置、是否取药)；②调用【分诊API(department_guide)】根据症状确定推荐科室；③调用【医院搜索API(hospital_search)】查询附近≥2家医院该科室号源(需处理“号源已满/停诊”的异常，自动改选)；④调用【地图/路线API】查询从家到选定医院的路线与耗时；⑤调用【药房查询API(pharmacy_query)】查医院附近医保定点药房；⑥调用【天气API】获取明天天气与预警；⑦调用【搜索引擎/就诊常识】与分诊结果相互印证；⑧综合生成结构化就医计划(科室、医院、预约时段、出发时间、携带材料、药房、天气提醒)。调用顺序：需求解析→分诊→医院号源→(若有号)路线→药房→天气→综合生成；号源不足时循环改选。关键原则：以API实际返回为准，不虚构号源/距离/天气。",ex:"对应模拟卷综合题3(智能体开发)。重点考“任务规划-API开发-工具调用-信息判断-结果生成”的完整智能体流程，以及异常处理(号源满/停诊改选)。"},
+{id:467,area:9,unit:"大模型推理(主观)",type:"sub",q:"【综合题·场景设计】金融智投系统需严格按部门、客户实现数据隔离，严禁跨客户越权查询。请设计关键词、向量、图混合召回链路上的权限约束与租户隔离方案，解决重排阶段越权片段混入的问题。",a:"方案要点：①租户/部门维度建立数据隔离：按部门、客户划分向量库集合(多库/多集合)或对每段数据打上租户标签(metadata)；②检索阶段施加权限过滤：关键词检索按权限过滤文档集合，向量检索在相似度过滤基础上强制叠加租户标签(metadata filter)，图检索按权限限制可访问的实体子图；③重排阶段二次校验：重排(Rerank)前对召回片段逐一校验其租户/部门归属，剔除越权片段，防止越权内容进入生成上下文；④权限在检索的每一层(关键词/向量/图/重排)都施加，而不是只靠提示词约束；⑤建立统一的权限服务，动态下发用户可访问的数据范围。",ex:"对应模拟卷实践1(2)。核心：权限过滤要“分层全程拦截”，尤其在向量检索的metadata filter和重排前的归属校验，绝不能只靠提示词。"},
+{id:468,area:9,unit:"大模型合规(主观)",type:"sub",q:"【综合题·场景设计】金融智投知识库存有员工隐私、客户信息、内部投研资料、未公开风控数据、涉密合同等敏感数据。请设计“入库脱敏、查询水印、全链路审计”的完整合规机制，避免信息泄露。",a:"机制要点：①入库脱敏：数据入库前对敏感字段(身份证、手机号、客户名等)进行脱敏/加密/掩码处理，做到“最小必要”留存，敏感度高数据加密存储；②查询水印：对返回给用户的关键回答/检索片段嵌入可追溯的水印(如隐式标识、片段指纹)，一旦泄露可溯源到具体请求与用户；③全链路审计：记录每次入库、检索、生成、输出的请求者、时间、内容、权限校验结果，形成审计日志，异常访问告警；④辅以权限拦截、数据分类分级、定期合规评估。原则：合规底线优先，敏感数据先治理再使用。",ex:"对应模拟卷实践1(3)。记忆：脱敏(防存)、水印(防泄可溯源)、审计(事后可追查)，三者构成金融合规铁三角。"},
+{id:469,area:9,unit:"大模型推理(主观)",type:"sub",q:"【综合题·代码修复】下列代码存在硬编码密钥、明文打印敏感信息、缺乏异常处理、无超时设置等问题。请说明修复要点(面向安全与可测试性)。",a:"修复要点：①密钥安全：API密钥从环境变量读取(如 os.getenv(\"API_KEY\"))，绝不硬编码在代码或日志中，不打印/不写日志；②HTTP封装：统一封装HTTP客户端，设置请求超时(timeout)，避免无限等待；③异常处理：对非2xx状态码和响应结构错误抛出明确异常(自定义异常类)，方便定位；④可测试性：使用依赖注入(把HTTP客户端/配置作为参数传入)，便于单元测试替换为mock；⑤职责单一：编排Agent只负责调度，不掺入密钥与底层HTTP细节。",ex:"对应模拟卷综合题1。安全与工程质量五要点：密钥走环境变量、超时防挂起、异常明确、依赖注入可测、职责分离。"},
+
+
+
+
+/* ================= 补题：语音处理 ================= */
+{id:470,area:7,unit:"声音信号预处理与量化",type:"s",q:"语音识别系统常用的采样率通常为_______。",opts:["16kHz(电话语音)或更高","10Hz","100Hz","1kHz"],a:[0],ex:"语音识别常用16kHz采样(覆盖电话语音带宽)，高保真语音可用48kHz。采样率决定能表示的最高频率。"},
+{id:471,area:7,unit:"声音信号预处理与量化",type:"s",q:"语音数字化时，量化位数(如16bit)决定_______。",opts:["幅度表示的精度/动态范围","采样频率","声道数量","文件格式"],a:[0],ex:"量化位数越高，幅度取值越精细、动态范围越大、失真越小，如16bit表示2^16级。"},
+{id:472,area:7,unit:"常用时域、频域、声学特征",type:"s",q:"把语音的时频表示绘制成图(横轴时间、纵轴频率、颜色深浅表能量)称为_______。",opts:["语谱图(Spectrogram)","波形图","直方图","散点图"],a:[0],ex:"语谱图展示语音随时间变化的频谱能量，是语音识别(如CNN)常见输入。"},
+{id:473,area:7,unit:"语音处理方法与应用",type:"j",q:"语音识别(ASR)的输出结果是文本。",a:true,ex:"ASR把语音转成对应的文字，供后续自然语言处理。"},
+{id:474,area:7,unit:"语音处理方法与应用",type:"s",q:"在一段连续音频中找出“哪里有人说话、哪里是静音”的过程称为_______。",opts:["语音端点检测(VAD)","语音合成","说话人识别","情感识别"],a:[0],ex:"端点检测(VAD)判断语音起止，可节省算力并提升识别效率。"},
+{id:475,area:7,unit:"语音处理方法与应用",type:"m",q:"下列属于语音合成(TTS)常用方法/技术的有_______。",opts:["参数化合成(声码器)","拼接合成","基于深度学习的端到端合成(Tacotron/神经网络声码器)","波形生成(如WaveNet)"],a:[0,1,2,3],ex:"TTS从参数合成、拼接合成到端到端神经网络合成，合成质量不断提高。"},
+{id:476,area:7,unit:"语音处理基础",type:"s",q:"语音中“最小的发音单位”(如b、a、m)称为_______。",opts:["音素(Phoneme)","词","句子","段落"],a:[0],ex:"音素是语音的最小发音单位，声学模型常以音素为建模单元。"},
+{id:477,area:7,unit:"语音处理方法与应用",type:"j",q:"语音合成(TTS)可以生成自然流畅的语音。",a:true,ex:"现代TTS(如神经网络合成)可生成接近真人的自然语音。"},
+{id:478,area:7,unit:"语音处理方法与应用",type:"s",q:"衡量语音识别准确度的常用指标是_______。",opts:["词错误率(WER)","准确率(AUC)","F1","MSE"],a:[0],ex:"WER=识别错误(插入/删除/替换)词数占参考词数比例，越低越好。"},
+{id:479,area:7,unit:"语音处理方法与应用",type:"s",q:"智能音箱在嘈杂客厅远距离识别语音，常依赖_______。",opts:["麦克风阵列与语音增强","单声道低质量录音","纯文本输入","手写输入"],a:[0],ex:"麦克风阵列做波束成形、回声消除与降噪，提升远场语音识别效果。"},
+{id:480,area:7,unit:"语音处理方法与应用",type:"s",q:"根据语音判断说话人的性别、年龄等属性，属于_______。",opts:["语音属性/副语言信息识别","语音合成","端点检测","语言模型"],a:[0],ex:"从语音中提取性别、年龄、情感等副语言/属性信息，是语音理解的一部分。"},
+{id:481,area:7,unit:"声音信号预处理与量化",type:"m",q:"语音识别的常用预处理步骤包括_______。",opts:["预加重","分帧加窗","去噪/增强","提取声学特征"],a:[0,1,2,3],ex:"预加重→分帧加窗→增强→特征提取(如MFCC)是语音预处理典型流程。"},
+/* ================= 补题：自然语言处理 ================= */
+{id:482,area:8,unit:"自然语言处理方法与应用",type:"s",q:"Word2Vec输出的词向量通常是_______。",opts:["低维稠密实数向量","高维稀疏0/1向量","字符串","音频"],a:[0],ex:"Word2Vec学习低维稠密向量，如几百维，语义相近的词向量距离近(区别于高维稀疏独热向量)。"},
+{id:483,area:8,unit:"自然语言处理方法与应用",type:"s",q:"语言模型的核心任务通常是_______。",opts:["根据上文预测下一个词的概率","识别图片","压缩视频","加密文本"],a:[0],ex:"语言模型建模P(w_t|w_1..w_{t-1})，预测下一个词，是生成与翻译的基础。"},
+{id:484,area:8,unit:"自然语言处理方法与应用",type:"s",q:"分词、词性标注、命名实体识别都属于_______任务。",opts:["序列标注","图像分割","语音合成","机器翻译"],a:[0],ex:"这些任务对每个词/位置打标签，统称序列标注(Sequence Labeling)。"},
+{id:485,area:8,unit:"自然语言处理方法与应用",type:"j",q:"注意力机制(Attention)让模型在生成某词时更关注输入中相关的部分。",a:true,ex:"注意力机制加权关注输入序列的关键部分，是Transformer与翻译的核心。"},
+{id:486,area:8,unit:"自然语言处理方法与应用",type:"s",q:"Transformer通过_______让模型感知词的先后顺序。",opts:["位置编码(Positional Encoding)","随机噪声","数据增强","正则化"],a:[0],ex:"Transformer无循环结构，用位置编码注入词的位置信息。"},
+{id:487,area:8,unit:"自然语言处理方法与应用",type:"s",q:"大语言模型生成文本时逐词(逐token)生成，这种方式称为_______。",opts:["自回归生成(Autoregressive)","一次性输出全部","随机抽取","卷积生成"],a:[0],ex:"GPT等按“预测下一个词→拼接→再预测”的自回归方式逐token生成。"},
+{id:488,area:8,unit:"自然语言处理方法与应用",type:"m",q:"Transformer编码器模块通常包含_______。",opts:["多头自注意力","前馈网络(FFN)","残差连接与层归一化","位置编码"],a:[0,1,2,3],ex:"Transformer编码器由多头自注意力、前馈网络、残差+层归一化及位置编码组成(对应模拟卷多选5)。"},
+{id:489,area:8,unit:"自然语言处理方法与应用",type:"s",q:"“先在大规模语料上预训练，再在下游任务上微调”的范式称为_______。",opts:["预训练-微调范式","纯随机训练","零样本压缩","规则匹配"],a:[0],ex:"预训练学习通用语言知识，微调适配具体任务，是NLP主流范式。"},
+{id:490,area:8,unit:"自然语言处理方法与应用",type:"s",q:"判断两句话是否意思相近，属于NLP中的_______。",opts:["语义匹配/文本相似度","语音识别","分词","风格迁移"],a:[0],ex:"语义匹配计算文本间的语义相似度，用于检索、复述检测等。"},
+{id:491,area:8,unit:"自然语言处理方法与应用",type:"s",q:"智能客服的“多轮对话”需要模型记住并理解_______。",opts:["上下文(对话历史)","硬件型号","屏幕大小","IP地址"],a:[0],ex:"多轮对话需结合历史上下文理解当前意图，是大模型对话的重要能力。"},
+{id:492,area:8,unit:"自然语言处理方法与应用",type:"j",q:"大模型生成文本具有一定随机性(概率性)，同样的输入可能得到不同输出。",a:true,ex:"生成模型按概率采样，温度/采样方式会影响输出的多样性。"},
+{id:493,area:8,unit:"自然语言处理方法与应用",type:"s",q:"通过设计提示词让大模型完成指定任务，这种技术称为_______。",opts:["提示词工程(Prompt Engineering)","数据增强","量化","蒸馏"],a:[0],ex:"提示词工程通过优化指令引导模型输出，是高效使用大模型的方法。"},
+/* ================= 补题：AI赋能千行百业 ================= */
+{id:494,area:10,unit:"智能社会",type:"s",q:"银行/电商智能客服自动解答用户问题，属于AI在_______领域的应用。",opts:["客户服务(智能客服)","语音合成","图像压缩","网络协议"],a:[0],ex:"智能客服用大模型+知识库自动答疑，提升服务效率。"},
+{id:495,area:10,unit:"机器人",type:"s",q:"智能仓储中自动搬运、分拣货物的机器人属于_______。",opts:["仓储物流机器人","语音助手","推荐系统","文本翻译"],a:[0],ex:"智能仓储机器人(AGV/AMR)自动搬运与分拣，属物流自动化。"},
+{id:496,area:10,unit:"智能驱动科学研究",type:"j",q:"大模型在能源领域可应用于流域水风光一体化智慧调度。",a:true,ex:"AI可用于能源预测与调度(如雅砻江60天水风光功率预报，对应模拟卷是非12)，体现大模型的行业价值。"},
+{id:497,area:10,unit:"智能创意",type:"s",q:"“数字人直播、AI主播”属于_______领域应用。",opts:["智能创意/数字人","智能医疗","智能交通","智能推荐"],a:[0],ex:"数字人是智能创意的典型应用，用于直播、客服、内容生产。"},
+{id:498,area:10,unit:"智能创意",type:"s",q:"AI根据歌词生成旋律、编曲，属于_______领域应用。",opts:["智能创意(AI音乐)","智能制造","智慧教育","智能仓储"],a:[0],ex:"AI音乐生成(作曲、编曲、演唱)是智能创意的重要方向。"},
+{id:499,area:10,unit:"智能推荐",type:"m",q:"下列属于智能推荐典型场景的有_______。",opts:["电商商品推荐","短视频推荐","新闻资讯推荐","音乐推荐"],a:[0,1,2,3],ex:"电商、短视频、新闻、音乐等都用推荐系统做个性化推送。"},
+{id:500,area:10,unit:"智能社会",type:"s",q:"无人超市/自助结算用视觉识别商品，属于_______领域应用。",opts:["智慧零售","智能医疗","语音处理","智能交通"],a:[0],ex:"智慧零售用计算机视觉与识别实现无人结算、智能补货。"},
+{id:501,area:10,unit:"智能社会",type:"s",q:"银行用AI识别可疑交易、防范诈骗，属于_______应用。",opts:["智能风控","智能创意","智能推荐","智慧教育"],a:[0],ex:"智能风控用机器学习检测异常交易、评估信贷风险。"},
+{id:502,area:10,unit:"智能驱动科学研究",type:"j",q:"AI可用于农业的病虫害识别与产量预测。",a:true,ex:"智慧农业用AI识别病虫害、监测作物生长、预测产量。"},
+{id:503,area:10,unit:"智慧教育",type:"m",q:"下列属于智慧教育常见AI应用的有_______。",opts:["智能批改作业","AI助教答疑","个性化学习路径","口语评测"],a:[0,1,2,3],ex:"批改、答疑、个性化路径、口语评测等都是智慧教育应用。"},
+{id:504,area:10,unit:"智能社会",type:"s",q:"政务大厅的AI政务机器人、智能审批辅助属于_______领域应用。",opts:["智慧政务/智能社会","智能创意","语音合成","智能制造"],a:[0],ex:"AI政务(智能问答、审批辅助、一网通办)是智能社会的重要体现。"},
+{id:505,area:10,unit:"智能医疗",type:"s",q:"“网上医生/在线问诊AI”属于智能医疗中的_______。",opts:["AI导诊/问诊咨询","图像压缩","智能推荐","语音合成"],a:[0],ex:"在线问诊AI根据症状给出分诊与就医建议，是智能医疗应用。"},
+/* ================= 补题：AI安全与伦理 ================= */
+{id:506,area:11,unit:"可信人工智能",type:"s",q:"“只收集完成任务所必需的最少数据”体现了数据保护的_______原则。",opts:["数据最小化","数据增广","数据可视化","数据压缩"],a:[0],ex:"数据最小化指仅采集必要数据，减少隐私风险，是隐私保护重要原则。"},
+{id:507,area:11,unit:"可信人工智能",type:"s",q:"对AI系统的算法、数据、决策进行系统性检查和评估称为_______。",opts:["算法审计(Audit)","数据增广","模型量化","特征工程"],a:[0],ex:"算法审计评估系统的公平性、安全性与合规性，发现并纠正问题。"},
+{id:508,area:11,unit:"可信人工智能",type:"j",q:"可以通过公平性评估和样本均衡等手段检测并缓解AI偏见。",a:true,ex:"通过子群体评估、重采样、公平约束等可缓解算法偏见。"},
+{id:509,area:11,unit:"人工智能伦理",type:"s",q:"通过给输入添加微小扰动使模型误判的攻击称为_______。",opts:["对抗样本攻击","网络钓鱼","SQL注入","DDOS"],a:[0],ex:"对抗样本在正常样本上加入微小不可见扰动，使模型错误分类，威胁AI安全。"},
+{id:510,area:11,unit:"人工智能伦理",type:"m",q:"下列属于保护AI数据隐私的常见技术有_______。",opts:["数据脱敏","差分隐私","联邦学习","同态加密"],a:[0,1,2,3],ex:"脱敏、差分隐私、联邦学习、同态加密等都用于数据隐私保护。"},
+{id:511,area:11,unit:"人工智能伦理",type:"s",q:"对AI生成内容进行涉黄、涉暴、诈骗等有害信息过滤，属于_______。",opts:["AI内容安全治理","模型压缩","数据增广","特征选择"],a:[0],ex:"内容安全治理(安全护栏)过滤有害输出，是大模型安全合规的必要措施。"},
+{id:512,area:11,unit:"人工智能伦理",type:"s",q:"当AI系统造成损害时，明确开发者/运营者的责任，涉及的是_______。",opts:["AI问责与责任归属","可解释性","公平性","隐私性"],a:[0],ex:"AI问责明确谁对系统行为负责，是伦理与法律的重要议题。"},
+{id:513,area:11,unit:"人工智能伦理",type:"j",q:"在医疗、金融等高风险场景，AI的建议通常需要人类复核。",a:true,ex:"高风险场景需人类在环复核，防止AI错误造成严重后果。"},
+{id:514,area:11,unit:"人工智能伦理",type:"s",q:"公开AI系统的能力边界、数据来源、局限等信息，属于AI的_______。",opts:["透明度与信息公开","运行加速","模型压缩","界面美化"],a:[0],ex:"透明度要求公开模型能力、数据与局限，帮助用户正确使用。"},
+{id:515,area:11,unit:"人工智能伦理",type:"s",q:"由多学科专家组成的、负责评估AI开发与应用伦理风险的机构称为_______。",opts:["AI伦理委员会","显卡驱动团队","网络运维组","销售部门"],a:[0],ex:"AI伦理委员会评估产品伦理风险，指导负责任开发。"},
+{id:516,area:11,unit:"人工智能伦理",type:"m",q:"构建负责任AI系统的实践包括_______。",opts:["伦理审查","偏见与公平性评估","隐私影响评估","安全护栏与审计"],a:[0,1,2,3],ex:"伦理审查、公平性/隐私评估、安全护栏与审计共同构成负责任AI实践。"},
+{id:517,area:11,unit:"人工智能伦理",type:"s",q:"企业收集用户数据用于AI训练前，通常需要获得用户的_______。",opts:["知情同意/授权","硬件许可","浏览器缓存","IP地址"],a:[0],ex:"数据采集需遵循知情同意原则，符合个人信息保护法规。"},
+];
+</script>
+<script>
+/* ============ 应用逻辑 ============ */
+/* ---- 多用户存储层 ---- */
+/* ============ 账号与数据层（服务器同步·多设备） ============ */
+const TOKEN_KEY='scite_ai4_token';
+let TOKEN = (function(){ try{ return localStorage.getItem(TOKEN_KEY)||null; }catch(e){ return null; } })();
+let CUR = { name:'', id:null };
+let LS = { attempts:{}, wrong:[], fav:[], settings:{} };
+
+async function api(path, method, body){
+  const opt = { method: method||'GET', headers:{'Content-Type':'application/json'} };
+  if(body!==undefined) opt.body = JSON.stringify(body);
+  if(TOKEN) opt.headers['Authorization']='Bearer '+TOKEN;
+  const r = await fetch(path, opt);
+  const j = await r.json().catch(()=>({error:'服务器响应异常'}));
+  if(!r.ok) throw new Error(j.error||('HTTP '+r.status));
+  return j;
+}
+
+/* 每次答题/收藏等改动都实时同步到服务器 */
+function saveDB(){
+  if(!TOKEN || !CUR.id) return;
+  fetch('/api/me',{ method:'PUT',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+    body: JSON.stringify({data: LS}) }).catch(e=>console.warn('同步失败',e));
+}
+
+function refreshUserBar(){
+  const bar=document.getElementById('userBar');
+  const online = TOKEN && CUR.id;
+  if(!bar) return;
+  bar.innerHTML = online
+    ? `<span class="pill" style="background:var(--accent);color:#fff;margin:0">👤 ${esc(CUR.name)}</span>
+       <span class="sub" style="margin:0">已同步云端</span>
+       <button class="btn btn-ghost btn-sm" onclick="logout()">退出</button>`
+    : `<span style="color:var(--muted);font-size:13px">未登录</span>
+       <button class="btn btn-primary btn-sm" onclick="openAuth('login')">登录</button>
+       <button class="btn btn-ghost btn-sm" onclick="openAuth('register')">注册</button>`;
+}
+
+function openAuth(mode){
+  document.getElementById('authTitle').textContent = mode==='register'?'📝 注册新账号':'🔑 登录';
+  document.getElementById('authMode').value = mode;
+  document.getElementById('authConfirmRow').style.display = mode==='register'?'':'none';
+  document.getElementById('authMsg').textContent='';
+  document.getElementById('authPwd').value='';
+  document.getElementById('authConfirm').value='';
+  document.getElementById('authName').value='';
+  document.getElementById('authModalBg').style.display='flex';
+  setTimeout(()=>{ try{ document.getElementById('authName').focus(); }catch(e){} },50);
+}
+function closeAuth(){ document.getElementById('authModalBg').style.display='none'; }
+
+async function doAuth(){
+  const mode=document.getElementById('authMode').value;
+  const name=document.getElementById('authName').value.trim();
+  const pwd=document.getElementById('authPwd').value;
+  const msg=document.getElementById('authMsg');
+  if(!name || !pwd){ msg.textContent='请填写用户名和密码'; return; }
+  if(mode==='register' && pwd!==document.getElementById('authConfirm').value){ msg.textContent='两次密码不一致'; return; }
+  if(pwd.length<4){ msg.textContent='密码至少4位'; return; }
+  msg.textContent='请稍候…';
+  try{
+    const j = mode==='register'
+      ? await api('/api/register','POST',{name,password:pwd})
+      : await api('/api/login','POST',{name,password:pwd});
+    TOKEN=j.token; CUR={id:j.id, name:j.name};
+    try{ localStorage.setItem(TOKEN_KEY, TOKEN); }catch(e){}
+    LS = Object.assign({attempts:{},wrong:[],fav:[],settings:{}}, j.data||{});
+    LS.attempts=LS.attempts||{}; LS.wrong=LS.wrong||[]; LS.fav=LS.fav||[];
+    closeAuth(); refreshUserBar();
+    const active=document.querySelector('#nav button.active');
+    show(active?active.dataset.view:'home');
+  }catch(e){ msg.textContent=e.message; }
+}
+
+async function logout(){
+  try{ if(TOKEN) await api('/api/logout','POST'); }catch(e){}
+  TOKEN=null; CUR={name:'',id:null}; LS={attempts:{},wrong:[],fav:[],settings:{}};
+  try{ localStorage.removeItem(TOKEN_KEY); }catch(e){}
+  refreshUserBar();
+  const active=document.querySelector('#nav button.active');
+  show(active?active.dataset.view:'home');
+}
+
+/* 刷新/重开时，用已存 token 自动恢复登录并加载服务器上的进度 */
+async function tryAutoLogin(){
+  if(!TOKEN) return false;
+  try{
+    const j=await api('/api/me','GET');
+    CUR={id:j.id, name:j.name};
+    LS = Object.assign({attempts:{},wrong:[],fav:[],settings:{}}, j.data||{});
+    LS.attempts=LS.attempts||{}; LS.wrong=LS.wrong||[]; LS.fav=LS.fav||[];
+    return true;
+  }catch(e){
+    TOKEN=null; try{ localStorage.removeItem(TOKEN_KEY); }catch(_){}
+    return false;
+  }
+}
+
+function byId(id){ return QS.find(q=>q.id===id); }
+function ansOf(q){
+  if(q.type==='j') return q.a?'正确':'错误';
+  if(q.type==='sub') return '（主观题，见参考答案）';
+  return q.a.map(i=>['A','B','C','D','E','F'][i]).join('、');
+}
+function areaOf(q){ return AREAS[q.area]?AREAS[q.area].name:'未知'; }
+function qCount(areaIdx){ return QS.filter(q=>q.area===areaIdx).length; }
+function answeredCount(areaIdx){ 
+  let n=0; QS.filter(q=>q.area===areaIdx).forEach(q=>{ if(LS.attempts[q.id]!==undefined) n++; }); return n;
+}
+function correctCount(areaIdx){
+  let n=0; QS.filter(q=>q.area===areaIdx).forEach(q=>{ if(LS.attempts[q.id]===true) n++; }); return n;
+}
+function accuracy(areaIdx){
+  const tot=answeredCount(areaIdx); if(!tot) return 0;
+  return Math.round(correctCount(areaIdx)/tot*100);
+}
+function isCorrect(q, sel){
+  if(q.type==='j') return !!sel === q.a;
+  if(!Array.isArray(sel)) return false;
+  if(sel.length!==q.a.length) return false;
+  const s=[...sel].sort((x,y)=>x-y); const a=[...q.a].sort((x,y)=>x-y);
+  return s.every((v,i)=>v===a[i]);
+}
+
+/* ---- rendering helpers ---- */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtOpts(opts){
+  const labels=['A','B','C','D','E','F'];
+  return opts.map((o,i)=>({t:o, k:labels[i], i}));
+}
+
+/* ---- views ---- */
+function show(view){
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  ['home','quiz','wrong','fav','stats'].forEach(v=>{
+    document.getElementById('view-'+v).classList.toggle('hidden', v!==view);
+  });
+  if(view==='home') renderHome();
+  if(view==='quiz') showQuizPicker();
+  if(view==='wrong') renderWrong();
+  if(view==='fav') renderFav();
+  if(view==='stats') renderStats();
+  window.scrollTo(0,0);
+}
+
+function renderHome(){
+  document.getElementById('totalCnt').textContent = QS.length;
+  const st = [
+    {n:QS.length, l:'总题量'},
+    {n:Object.values(LS.attempts).filter(v=>v!==undefined).length, l:'已作答'},
+    {n:Object.values(LS.attempts).filter(v=>v===true).length, l:'答对'},
+    {n:LS.wrong.length, l:'错题数'}
+  ];
+  document.getElementById('statsRow').innerHTML = st.map(s=>`<div class="card stat"><div class="num">${s.n}</div><div class="lab">${s.l}</div></div>`).join('');
+  document.getElementById('areaList').innerHTML = AREAS.map((a,i)=>{
+    const tot=qCount(i), ans=answeredCount(i), acc=accuracy(i);
+    const pct = tot? Math.round(ans/tot*100):0;
+    return `<div class="card area" onclick="goQuiz(${i})">
+      <div class="ah"><span class="anum">${i+1}</span><h3>${esc(a.name)}</h3></div>
+      <div class="tagline">${esc(a.desc)}</div>
+      <div class="meta"><span>${tot} 题</span><span>已练 ${ans}</span><span>正确率 ${acc}%</span></div>
+      <div class="progress"><i style="width:${pct}%"></i></div>
+    </div>`;
+  }).join('');
+}
+
+/* ---- quiz state ---- */
+const QUIZ = {list:[], pos:0, sel:[], mode:'area', areaIdx:0, type:'single', pickMode:'顺序'};
+
+function goQuiz(areaIdx){ QUIZ.areaIdx=areaIdx; showQuizPicker(); startArea(areaIdx, QUIZ.pickMode); }
+
+function setPickMode(m){ QUIZ.pickMode=m; renderModebar(); renderAreaCards(); }
+function renderModebar(){
+  document.getElementById('modebar').innerHTML = MODES.map(m=>
+    `<button class="${QUIZ.pickMode===m.id?'active':''}" onclick="setPickMode('${m.id}')">${m.t}</button>`).join('');
+}
+function renderAreaCards(){
+  document.getElementById('quizAreas').innerHTML = AREAS.map((a,i)=>{
+    const tot=qCount(i), acc=accuracy(i);
+    return `<div class="card area" onclick="startArea(${i},'${QUIZ.pickMode}')">
+      <div class="ah"><span class="anum">${i+1}</span><h3>${esc(a.name)}</h3></div>
+      <div class="meta"><span>${tot} 题</span><span>正确率 ${acc}%</span></div>
+      <div class="progress"><i style="width:${tot?Math.round(answeredCount(i)/tot*100):0}%"></i></div>
+    </div>`;
+  }).join('');
+}
+function showQuizPicker(){
+  document.getElementById('quizPicker').classList.remove('hidden');
+  document.getElementById('quizBox').classList.add('hidden');
+  renderModebar();
+  renderAreaCards();
+}
+function startAllExam(){
+  QUIZ.pickMode='模拟考试'; renderModebar();
+  const list = buildExam(null);
+  if(!list.length){ alert('题目不足，无法组卷'); return; }
+  QUIZ.areaIdx=-1; QUIZ.mode='模拟考试';
+  QUIZ.list=list; QUIZ.pos=0; QUIZ.sel=[];
+  document.getElementById('quizPicker').classList.add('hidden');
+  document.getElementById('quizBox').classList.remove('hidden');
+  renderQ();
+}
+
+const MODES = [
+  {id:'顺序', t:'顺序刷题'},
+  {id:'随机', t:'随机刷题'},
+  {id:'错题重练', t:'错题重练'},
+  {id:'收藏', t:'收藏练习'},
+  {id:'模拟考试', t:'模拟考试'}
+];
+
+function startArea(areaIdx, mode){
+  QUIZ.areaIdx=areaIdx; QUIZ.mode=mode;
+  const inArea = q => (areaIdx==null || areaIdx===-1 || q.area===areaIdx);
+  let list;
+  if(mode==='错题重练'){
+    list = QS.filter(q=>inArea(q) && LS.wrong.includes(q.id));
+    if(!list.length){ alert('当前考点暂无错题'); return; }
+  } else if(mode==='收藏'){
+    list = QS.filter(q=>inArea(q) && LS.fav.includes(q.id));
+    if(!list.length){ alert('该考点收藏夹为空'); return; }
+  } else if(mode==='模拟考试'){
+    list = buildExam(areaIdx==null||areaIdx===-1?null:areaIdx);
+    if(!list.length){ alert('该考点题目数量不足，无法组卷'); return; }
+  } else {
+    list = QS.filter(q=>inArea(q));
+    if(mode==='随机') list = shuffle(list);
+    if(!list.length){ alert('该考点暂无题目'); return; }
+  }
+  QUIZ.list=list; QUIZ.pos=0; QUIZ.sel=[];
+  document.getElementById('quizPicker').classList.add('hidden');
+  document.getElementById('quizBox').classList.remove('hidden');
+  renderQ();
+}
+
+function buildExam(areaIdx){
+  const pool = areaIdx==null? QS : QS.filter(q=>q.area===areaIdx);
+  const singles = pool.filter(q=>q.type==='s');
+  const judges  = pool.filter(q=>q.type==='j');
+  const multis  = pool.filter(q=>q.type==='m');
+  // 参考试卷结构：单选20、是非10、多选10
+  const pick=(arr,n)=>{ const s=shuffle(arr.slice()); return s.slice(0,Math.min(n,arr.length)); };
+  return [ ...pick(singles,20), ...pick(judges,10), ...pick(multis,10) ];
+}
+
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function curQ(){ return QUIZ.list[QUIZ.pos]; }
+
+function renderQ(){
+  const q=curQ(); if(!q) return;
+  QUIZ.sel = [];
+  const sub = q.type==='sub';
+  const multi = q.type==='m';
+  const jtype = q.type==='j';
+  const typeLabel = sub? '主观题（简答/操作/应用）' : (jtype? '是非题' : (multi? '多选题':'单选题'));
+  document.getElementById('areaTag').textContent = areaOf(q);
+  document.getElementById('unitTag').textContent = q.unit||'';
+  document.getElementById('qtypeTag').textContent = typeLabel;
+  document.getElementById('qtypeTag').className='qtype '+ (sub?'qt-sub':(jtype?'qt-j':(multi?'qt-m':'qt-s')));
+  document.getElementById('qpos').textContent = `第 ${QUIZ.pos+1}/${QUIZ.list.length} 题`;
+  document.getElementById('qtext').innerHTML = esc(q.q);
+  document.getElementById('analysis').className='analysis';
+  document.getElementById('analysis').innerHTML='';
+  document.getElementById('analysis').style.display='none';
+
+  const labels=['A','B','C','D','E','F'];
+  let html='';
+  if(sub){
+    html = `<textarea id="subAnswer" class="searchbox" style="min-height:130px;resize:vertical" placeholder="在此输入你的作答（仅作练习草稿，不自动判分；点击“查看答案”后自评）"></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ok" id="gradeOk" onclick="gradeSub(true)">✅ 我答对了</button>
+        <button class="btn btn-err" id="gradeNo" onclick="gradeSub(false)">❌ 我答错了</button>
+      </div>`;
+  } else if(jtype){
+    html = ['对','错'].map((t,i)=>`<div class="opt" data-idx="${i}" onclick="selOpt(${i})"><span class="k">${i===0?'✔':'✘'}</span><span>${t}</span></div>`).join('');
+  } else {
+    html = q.opts.map((o,i)=>`<div class="opt" data-idx="${i}" onclick="selOpt(${i})"><span class="k">${labels[i]}</span><span>${esc(o)}</span></div>`).join('');
+  }
+  document.getElementById('opts').innerHTML=html;
+  document.getElementById('submitBtn').style.display = sub? 'none':'';
+  document.getElementById('submitBtn').disabled=false;
+  document.getElementById('submitBtn').textContent='✔ 提交';
+  document.getElementById('toggleFavBtn').textContent = LS.fav.includes(q.id)? '★ 已收藏':'☆ 收藏';
+  document.getElementById('viewAnsBtn').disabled=false;
+  document.getElementById('quizNavInfo').textContent = '';
+  document.getElementById('prevBtn').disabled = QUIZ.pos===0;
+  document.getElementById('nextBtn').disabled = QUIZ.pos>=QUIZ.list.length-1;
+}
+
+function selOpt(i){
+  const q=curQ(); if(!q||q.type==='sub') return;
+  const el = document.querySelector(`.opt[data-idx="${i}"]`);
+  const prevSel = QUIZ.sel;
+  if(q.type==='j'){ QUIZ.sel=[i]; document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); }
+  else if(q.type==='m'){
+    const ix = QUIZ.sel.indexOf(i);
+    if(ix>=0){ QUIZ.sel.splice(ix,1); el.classList.remove('sel'); } else { QUIZ.sel.push(i); el.classList.add('sel'); }
+  } else {
+    QUIZ.sel=[i]; document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel')); el.classList.add('sel');
+  }
+}
+
+function submitQ(){
+  const q=curQ(); if(!q||q.type==='sub') return;
+  if(!QUIZ.sel.length){ alert('请先选择答案'); return; }
+  const correct = isCorrect(q, q.type==='j'? (QUIZ.sel[0]===0): QUIZ.sel);
+  const selArr = q.type==='j'? [QUIZ.sel[0]===0]: QUIZ.sel;
+  // 记录
+  LS.attempts[q.id] = correct;
+  if(!correct && !LS.wrong.includes(q.id)) LS.wrong.push(q.id);
+  if(correct){ const ix=LS.wrong.indexOf(q.id); if(ix>=0) LS.wrong.splice(ix,1); }
+  saveDB();
+  // 标记选项
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel','correct','wrong'));
+  const correctIdx = q.type==='j'? (q.a?0:1) : q.a;
+  const corrSet = new Set(Array.isArray(correctIdx)? correctIdx : [correctIdx]);
+  document.querySelectorAll('.opt').forEach(o=>{
+    const i=parseInt(o.dataset.idx);
+    if(corrSet.has(i)) o.classList.add('correct');
+    else if(selArr.includes(i)) o.classList.add('wrong');
+  });
+  // 解析
+  const ana = document.getElementById('analysis');
+  ana.className='analysis '+(correct?'ok':'no')+' show';
+  const ansText = q.type==='j'? (q.a?'正确':'错误') : q.a.map(i=>['A','B','C','D','E','F'][i]).join('、');
+  ana.innerHTML = `<div class="ttl">${correct?'✅ 回答正确':'❌ 回答错误'} · 正确答案：${ansText}</div><div>${esc(q.ex||'无解析')}</div>`;
+  document.getElementById('submitBtn').disabled=true;
+  document.getElementById('submitBtn').textContent = correct? '✔ 已答对':'✘ 已答错';
+  if(correct){ confetti(); }
+  // 更新导航进度信息
+  document.getElementById('quizNavInfo').textContent = `本卷已答对 ${QS.filter(x=>LS.attempts[x.id]===true).length} 题`;
+}
+
+function gradeSub(correct){
+  const q=curQ(); if(!q) return;
+  LS.attempts[q.id] = correct;
+  if(!correct && !LS.wrong.includes(q.id)) LS.wrong.push(q.id);
+  if(correct){ const ix=LS.wrong.indexOf(q.id); if(ix>=0) LS.wrong.splice(ix,1); }
+  saveDB();
+  const ana = document.getElementById('analysis');
+  ana.className='analysis '+(correct?'ok':'no')+' show';
+  ana.innerHTML = `<div class="ttl">${correct?'✅ 已记录：我答对了':'❌ 已记录：我答错了'}</div><div>${esc(q.ex||'无解析')}</div>`;
+  const g1=document.getElementById('gradeOk'), g2=document.getElementById('gradeNo');
+  if(g1){g1.disabled=true;} if(g2){g2.disabled=true;}
+  if(correct) confetti();
+  document.getElementById('quizNavInfo').textContent = `本卷已答对 ${QS.filter(x=>LS.attempts[x.id]===true).length} 题`;
+}
+
+function viewAnswer(){
+  const q=curQ(); if(!q) return;
+  const ana=document.getElementById('analysis');
+  if(q.type==='sub'){
+    ana.className='analysis show ok';
+    ana.innerHTML = `<div class="ttl">📖 参考答案</div><div style="white-space:pre-wrap">${esc(q.a)}</div>
+      ${q.ex?`<div class="sub" style="margin-top:8px">💡 ${esc(q.ex)}</div>`:''}`;
+    return;
+  }
+  const ansText = q.type==='j'? (q.a?'正确':'错误') : q.a.map(i=>['A','B','C','D','E','F'][i]).join('、');
+  document.querySelectorAll('.opt').forEach(o=>{
+    const i=parseInt(o.dataset.idx);
+    const corrSet = new Set(Array.isArray(q.a)? q.a:[q.a]);
+    if(corrSet.has(i)) o.classList.add('correct');
+  });
+  ana.className='analysis show ok';
+  ana.innerHTML=`<div class="ttl">📖 参考答案：${ansText}</div><div>${esc(q.ex||'无解析')}</div>`;
+}
+
+function toggleFav(){
+  const q=curQ(); if(!q) return;
+  const ix=LS.fav.indexOf(q.id);
+  if(ix>=0){ LS.fav.splice(ix,1); document.getElementById('toggleFavBtn').textContent='☆ 收藏'; }
+  else { LS.fav.push(q.id); document.getElementById('toggleFavBtn').textContent='★ 已收藏'; }
+  saveDB();
+}
+
+function nextQ(){ if(QUIZ.pos<QUIZ.list.length-1){ QUIZ.pos++; renderQ(); } }
+function prevQ(){ if(QUIZ.pos>0){ QUIZ.pos--; renderQ(); } }
+function jumpFirst(){ QUIZ.pos=0; renderQ(); }
+function jumpLast(){ QUIZ.pos=QUIZ.list.length-1; renderQ(); }
+function exitQuiz(){ showQuizPicker(); }
+
+/* ---- wrong ---- */
+function renderWrong(){
+  const list = LS.wrong.map(id=>byId(id)).filter(Boolean);
+  const el=document.getElementById('wrongList');
+  if(!list.length){ el.innerHTML=`<div class="empty">🎉 暂无错题，继续保持！</div>`; return; }
+  el.innerHTML = list.map(q=>{
+    const ansText = ansOf(q);
+    return `<div class="row">
+      <div class="q"><span class="qtype ${q.type==='m'?'qt-m':(q.type==='j'?'qt-j':(q.type==='sub'?'qt-sub':'qt-s'))}" style="margin-right:8px">${q.type==='m'?'多选':(q.type==='j'?'是非':(q.type==='sub'?'主观':'单选'))}</span><b>[${esc(areaOf(q))}]</b> ${esc(q.q.slice(0,60))}${q.q.length>60?'…':''}<div class="sub" style="margin-top:4px">答案：${ansText}</div></div>
+      <div class="acts">
+        <button class="btn btn-ghost btn-sm" onclick="openQuestion(${q.id})">查看</button>
+        <button class="btn btn-err btn-sm" onclick="removeWrong(${q.id})">移除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function removeWrong(id){ const ix=LS.wrong.indexOf(id); if(ix>=0) LS.wrong.splice(ix,1); saveDB(); renderWrong(); }
+function clearWrong(){ LS.wrong=[]; saveDB(); renderWrong(); }
+function retrainWrong(){ if(!LS.wrong.length){ alert('没有错题'); return; } show('quiz'); startArea(null,'错题重练'); }
+
+/* ---- fav ---- */
+function renderFav(){
+  const list = LS.fav.map(id=>byId(id)).filter(Boolean);
+  const el=document.getElementById('favList');
+  if(!list.length){ el.innerHTML=`<div class="empty">⭐ 还没有收藏题目</div>`; return; }
+  el.innerHTML = list.map(q=>{
+    return `<div class="row"><div class="q"><b>[${esc(areaOf(q))}]</b> ${esc(q.q.slice(0,60))}${q.q.length>60?'…':''}</div>
+      <div class="acts"><button class="btn btn-ghost btn-sm" onclick="openQuestion(${q.id})">查看</button>
+      <button class="btn btn-err btn-sm" onclick="unfav(${q.id})">取消</button></div></div>`;
+  }).join('');
+}
+function unfav(id){ const ix=LS.fav.indexOf(id); if(ix>=0) LS.fav.splice(ix,1); saveDB(); renderFav(); }
+
+function openQuestion(id){
+  const q=byId(id); if(!q) return;
+  const ansText = ansOf(q);
+  document.getElementById('modalTitle').textContent = `[${esc(areaOf(q))}] ${q.type==='m'?'多选题':(q.type==='j'?'是非题':(q.type==='sub'?'主观题':'单选题'))}`;
+  document.getElementById('modalBody').innerHTML =
+    `<div class="qtext">${esc(q.q)}</div>`+
+    `<div class="opts">${q.opts?q.opts.map((o,i)=>`<div class="opt ${Array.isArray(q.a)&&q.a.includes(i)?'correct':''}"><span class="k">${['A','B','C','D','E','F'][i]}</span><span>${esc(o)}</span></div>`).join(''):''}</div>`+
+    (q.type==='j'?`<div class="analysis show ${q.a?'ok':'no'}"><div class="ttl">参考答案：${q.a?'正确':'错误'}</div><div>${esc(q.ex||'')}</div></div>`
+      :(q.type==='sub'?`<div class="analysis show ok"><div class="ttl">参考答案</div><div style="white-space:pre-wrap">${esc(q.a)}</div>${q.ex?`<div class="sub" style="margin-top:8px">💡 ${esc(q.ex)}</div>`:''}</div>`
+        :`<div class="analysis show ok"><div class="ttl">参考答案：${ansText}</div><div>${esc(q.ex||'')}</div></div>`));
+  document.getElementById('modalBg').style.display='flex';
+}
+function closeModal(){ document.getElementById('modalBg').style.display='none'; }
+
+/* ---- stats ---- */
+function renderStats(){
+  const el=document.getElementById('statsTable');
+  const rows = AREAS.map((a,i)=>{
+    const tot=qCount(i), ans=answeredCount(i), cor=correctCount(i), acc=accuracy(i);
+    const pct = tot? Math.round(ans/tot*100):0;
+    return `<div class="row"><div class="q"><b>${i+1}. ${esc(a.name)}</b><div class="sub">${tot} 题 · 已练 ${ans} · 答对 ${cor}</div></div>
+      <div style="width:180px"><div class="progress"><i style="width:${pct}%"></i></div><div class="sub" style="margin-top:4px">正确率 ${acc}%</div></div></div>`;
+  }).join('');
+  const total = Object.values(LS.attempts).filter(v=>v!==undefined).length;
+  const tocor = Object.values(LS.attempts).filter(v=>v===true).length;
+  const overall = total? Math.round(tocor/total*100):0;
+  el.innerHTML = `<div class="card" style="margin-bottom:16px"><div class="grid2">
+      <div class="stat"><div class="num">${total}</div><div class="lab">累计作答</div></div>
+      <div class="stat"><div class="num">${overall}%</div><div class="lab">总体正确率</div></div></div></div>` + rows;
+}
+
+/* ---- confetti ---- */
+function confetti(){
+  const colors=['#6c8cff','#3ecf8e','#ff5d7a','#ffb84d','#7f5cff','#ff9ac1'];
+  for(let i=0;i<40;i++){
+    const s=document.createElement('span');
+    s.className='confetti';
+    s.textContent=Math.random()>0.5?'🎉':'✨';
+    s.style.left=Math.random()*100+'vw';
+    s.style.background='transparent';
+    s.style.color=colors[Math.floor(Math.random()*colors.length)];
+    s.style.animationDuration=(1.8+Math.random()*1.4)+'s';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),4000);
+  }
+}
+
+/* ---- init ---- */
+async function init(){
+  // 组装数据
+  QS = [...QUESTIONS];
+  document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
+  refreshUserBar();
+  const ok = await tryAutoLogin();
+  if(!ok) openAuth('login');
+  renderHome();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
