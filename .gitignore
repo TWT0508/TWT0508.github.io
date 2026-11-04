@@ -6,3 +6,8 @@ _*.txt
 ~$*
 Thumbs.db
 .DS_Store
+
+# 本地备份与自检产物（不推送）
+_backup/
+_shots/
+**/_shots/
